@@ -12,19 +12,19 @@ void p(const T &c)
 template<typename T>
 void initC(T &c,int n)
 {c.clear();for(int i=0;i<n;i++)c.push_back(typename T::value_type(i));}
-template<typename T,typename P>
-void testCopy_back(T &c,P &p){
-copy_backward(c.begin(),c.end(),back_inserter(p));
+template<typename T,typename P,typename Q>
+void testMerge(T &c,P &p,Q &q){
+merge(c.begin(),c.end(),p.begin(),p.end(),back_inserter(q));
 }
 
 int main()
 {
-	vector<int> v,vv;
+	vector<int> v;
 	list<int> l;
 	deque<int> deq;
 	initC(v,10);
-	//initC(l,7);
-	testCopy_back(v,vv);
-	p(vv);
+	initC(l,7);
+	testMerge(v,l,deq);
+	p(deq);
 	return 0;
 }
