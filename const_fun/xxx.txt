@@ -1,0 +1,5 @@
+const_fun
+const_fun.cpp
+const_fun.o
+makefile
+xxx.txt
