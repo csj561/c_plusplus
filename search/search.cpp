@@ -89,12 +89,12 @@ public:
 int v;
 	A(int a):v(a){}
 	
-	//operator int(){return v;}
+	operator int(){return v;}
 	void p(){cout<<"v="<<v<<endl;}
 };
 //bool operator==(const A &a,const A &b){return a.v==b.v;}
-bool operator<(const A &a,const A &b){return a.v<b.v;}
-bool operator>(const A &a,const A &b){return a.v>b.v;}
+//bool operator<(const A &a,const A &b){return a.v<b.v;}
+//bool operator>(const A &a,const A &b){return a.v>b.v;}
 vector<A> a;
 void initA()
 {
@@ -106,7 +106,7 @@ void initA()
 template<typename T>
 void testBinary_search(T& tt)
 {
-	cout<<"ret is "<<binary_search(tt.begin(),tt.end(),A(22))<<endl;
+	cout<<"ret is "<<binary_search(tt.begin(),tt.end(),22)<<endl;
 }
 int main()
 {

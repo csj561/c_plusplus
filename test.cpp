@@ -14,7 +14,7 @@ void initC(T &c,int n)
 {c.clear();for(int i=0;i<n;i++)c.push_back(typename T::value_type(i));}
 template<typename T,typename P>
 void testCopy_back(T &c,P &p){
-copy_backward(c.begin(),c.end(),back_inserter(p));
+copy_backward(c.begin(),c.end(),p.end());
 }
 
 int main()
@@ -23,8 +23,8 @@ int main()
 	list<int> l;
 	deque<int> deq;
 	initC(v,10);
-	//initC(l,7);
-	testCopy_back(v,vv);
+	initC(l,17);
+	testCopy_back(v,l);
 	p(vv);
 	return 0;
 }
