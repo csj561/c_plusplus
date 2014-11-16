@@ -18,11 +18,14 @@ void addC(T &c,int n)
 {for(int i=0;i<n;i++)c.push_back(typename T::value_type(i));}
 template<typename T>
 void rsort(T &c){sort(c.begin(),c.end(),greater<typename T::value_type>());}
-template<typename T,typename P>
-void testRemove_copy(T &t,P &p){
-remove_copy(t.begin(),t.end(),back_inserter(p),5);}
 template<typename T>
-void testUnique(T &t){t.erase(unique(t.begin(),t.end()),t.end());}
+void testRemove(T &t){t.erase(remove_if(t.begin(),t.end(),bind2nd( modulus<typename T::value_type>(),2)),t.end());}
+template<typename T>
+void testUnique(T &t){
+t.erase(
+unique(t.begin(),t.end()),
+t.end());
+}
 
 
 int main()
@@ -31,8 +34,9 @@ int main()
 	list<int> l;
 	initC(l,10);
 	addC(l,10);
-	p(vv);
-	testRemove_copy(l,vv);
-	p(vv);
+	
+	p(l);
+	reverse(l.begin(),l.end());
+	p(l);
 	return 0;
 }
