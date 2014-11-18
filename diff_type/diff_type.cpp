@@ -18,23 +18,18 @@ void addC(T &c,int n)
 {for(int i=0;i<n;i++)c.push_back(typename T::value_type(i));}
 template<typename T>
 void rsort(T &c){sort(c.begin(),c.end(),greater<typename T::value_type>());}
-
 template<typename T>
-void testPartition(T &t){partition(t.begin(),t.end(),not1( bind2nd(modulus<typename T::value_type>(),2)));}
+void testRemove(T &t){t.erase(remove_if(t.begin(),t.end(),bind2nd( modulus<typename T::value_type>(),2)),t.end());}
 template<typename T>
-void testNth_elemetn(T &t){
-nth_element(t.begin(),t.begin()+13,t.end());
+void testUnique(T &t){
+t.erase(
+unique(t.begin(),t.end()),
+t.end());
 }
+
 
 int main()
 {
-	vector<int> v,vv(10);
-	list<int> l;
-	deque<int> deq;
-	initC(v,20);
-	testPartition(v);
-	p(v);
-	testNth_elemetn(v);
-	p(v);
+	cout<< "diff type size is " << sizeof( vector<int>::difference_type) <<endl;
 	return 0;
 }
