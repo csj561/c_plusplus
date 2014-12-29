@@ -6,21 +6,46 @@ extern "C"
 #include <unistd.h>
 #include <time.h>
 #include <signal.h>
+#include <errno.h>
+#include <sys/wait.h>
 }
 using namespace std;
+
 void f(int s)
 {
 	time_t t=time(NULL);
-	while(1)
+	if(signal(SIGINT,&f)==SIG_ERR)
 	{
-		printf("got signal at %d \n",t);
-		sleep(1);
+		perror("signal");
+		return ;
+	}
+	//while(1)
+	{
+		printf("got signal in pid %d \n",getpid());
+		sleep(3);
 	}
 }
-int main()
+int main(int argc,char **argv)
 {
-	signal(SIGUSR1,&f);
-	while(1)
-		sleep(1);
+	
+	pid_t pid;
+	cout<<"in :"<<argv[0]<<endl;
+	if((pid=fork())==0)
+	{
+
+	}
+	if(pid>0)
+	{
+	sigset(SIGINT,&f);
+	signal(SIGTERM,SIG_IGN);
+	
+	getchar();
+	//sleep(2);
+	cout<<"exit father"<<endl;
+	}
+	//while(1)
+	//	sleep(1);
+	
+	//getchar();
 	return 0;
 }
