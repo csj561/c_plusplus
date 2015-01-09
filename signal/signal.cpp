@@ -14,35 +14,27 @@ using namespace std;
 void f(int s)
 {
 	time_t t=time(NULL);
-	if(signal(SIGINT,&f)==SIG_ERR)
-	{
-		perror("signal");
-		return ;
-	}
+	
 	//while(1)
 	{
-		printf("got signal in pid %d \n",getpid());
+		printf("got signal %d in pid %d \n",s,getpid());
 		sleep(3);
+		cout<<"end signal handler"<<endl;
 	}
 }
 int main(int argc,char **argv)
 {
 	
 	pid_t pid;
-	cout<<"in :"<<argv[0]<<endl;
-	if((pid=fork())==0)
-	{
-
-	}
-	if(pid>0)
-	{
-	sigset(SIGINT,&f);
+	cout<<"in :"<<argv[0]
+	<<" pid is "<<getpid()<<endl;
+	
+	signal(40,&f);
 	signal(SIGTERM,SIG_IGN);
 	
 	getchar();
 	//sleep(2);
 	cout<<"exit father"<<endl;
-	}
 	//while(1)
 	//	sleep(1);
 	
