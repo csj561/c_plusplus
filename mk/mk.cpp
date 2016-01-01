@@ -20,7 +20,7 @@ vstr fn_split(const string & fn)
 		return ret;
 	}
 	ret.push_back(fn);
-	ret.push_back(string(fn.c_str(),pos));
+	ret.push_back(string(fn.c_str(),pos) + ".elf");
 	struct stat st0,st1;
 	if(0 == stat(ret[0].c_str(),&st0) && 0 == stat(ret[1].c_str(),&st1))
 	{
