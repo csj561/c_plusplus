@@ -16,12 +16,15 @@ typedef vector<string> vstr;
 typedef map<string,int> msi;
 typedef map<string,string> mss;
 mss m_;
+
+/*遍历打印map中的内容*/
 template<typename T>
 void pm(const T &c)
 {for(typename T::const_iterator iter=c.begin();iter!=c.end();iter++) cout<<iter->first<<" == "<<iter->second<<endl; cout<<endl;}
 
 
 /*
+	获取目录下面的文件(或者目录)， .或者..会被过滤掉
 	   DT_BLK      This is a block device.
 
        DT_CHR      This is a character device.
@@ -68,7 +71,7 @@ void get_file_list(const string &path,msi &m,int type = -1)
 	}
 	//pm(m);
 }
-
+/*替换string中的内容，map中first为旧值，second为新值*/
 void procss_line(string &line,const mss &m)
 {
 	for(mss::const_iterator iter = m.begin();iter!=m.end();iter++)
@@ -82,7 +85,7 @@ void procss_line(string &line,const mss &m)
 		}
 	}
 }
-
+/*去除string中的回车换行符*/
 void rm_nl(string &line)
 {
 	static mss m;
@@ -94,7 +97,7 @@ void rm_nl(string &line)
 	
 	procss_line(line,m);
 }
-
+/*将string以key分割成两段,以最后一个key为分割点*/
 vstr line_split(const string & line,const string &key)
 {
 	vstr ret;
