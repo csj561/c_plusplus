@@ -98,6 +98,7 @@ void rm_nl(string &line)
 vstr line_split(const string & line,const string &key)
 {
 	vstr ret;
+	//rm_nl(line);
 	string::size_type pos = line.find_last_of(key);
 	if(string::npos == pos)
 	{
@@ -165,6 +166,14 @@ void indent_file(const string &fn)
 	cout<<oss.str()<<endl;
 	system(oss.str().c_str());
 }
+void process(const char *fn,mss &m)
+{
+	if(access(fn,F_OK))
+		return;
+	procss_file(fn,m);
+	indent_file(fn);
+	procss_file(fn,m);
+}
 int main(int argc,char **argv)
 {
 	if(argc == 1 )
@@ -175,9 +184,7 @@ int main(int argc,char **argv)
 	init();
 	for(int i = 1;i < argc; i++)
 	{
-		procss_file(argv[i],m_);
-		indent_file(argv[i]);
-		procss_file(argv[i],m_);
+		process(argv[i],m_);
 	}
 	return 0;
 }
