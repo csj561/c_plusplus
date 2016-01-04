@@ -24,7 +24,7 @@ class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH >
 /*接受连接时自动调用open方法*/
   public:int open(void *)  
   {
-        cout << "Connection established" << endl;
+        cout << "acceptor Connection established" << endl;
   } 
 };
 
