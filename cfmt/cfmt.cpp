@@ -10,19 +10,33 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <algorithm>
 #include <map>
 using namespace std;
 typedef vector<string> vstr;
 typedef map<string,int> msi;
 typedef map<string,string> mss;
-mss m_;
-
+static mss m_;
+static string indent_cfg("");
 /*遍历打印map中的内容*/
 template<typename T>
 void pm(const T &c)
 {for(typename T::const_iterator iter=c.begin();iter!=c.end();iter++) cout<<iter->first<<" == "<<iter->second<<endl; cout<<endl;}
 
-
+typedef bool (*chk)(const char *);
+bool chk_suffix(const char *fn,const char *suffix/*etc .txt*/)
+{
+    const char *pos = find_end((const char *)fn,fn+strlen(fn),(const char *)suffix,suffix+strlen(suffix));
+    return pos !=fn-1 ? (0 == strcmp(pos,suffix)) : false;
+}
+bool chk_map(const char *fn)
+{
+    return chk_suffix(fn,".map")||chk_suffix(fn,".MAP");
+}
+bool chk_indent(const char *fn)
+{
+    return chk_suffix(fn,".indent")||chk_suffix(fn,".INDENT");
+}
 /*
 	获取目录下面的文件(或者目录)， .或者..会被过滤掉
 	   DT_BLK      This is a block device.
@@ -44,7 +58,8 @@ void pm(const T &c)
        -1 		   All files.
 
 */
-void get_file_list(const string &path,msi &m,int type = -1)
+
+void get_file_list(const string &path,msi &m,int type = -1,chk chk_fn= NULL)
 {
 	struct stat st;
 	string base_dir = path + ('/' == path[path.size()-1] ? "" : "/");
@@ -62,6 +77,8 @@ void get_file_list(const string &path,msi &m,int type = -1)
 		{
 			if(0==strcmp(pdir->d_name,".")||0==strcmp(pdir->d_name,".."))
 				continue;
+            if(chk_fn && false == (*chk_fn)(pdir->d_name))
+                continue;
 			if(-1 == type)
 				m[base_dir+pdir->d_name] = pdir->d_type;
 			else if(type == pdir->d_type)
@@ -132,14 +149,35 @@ void init_file(const string &file,mss &m)
 	}
 	ifs.close();
 }
+void init_fmt_file(const char *fn)
+{
+    ifstream ifs(fn);
+    if(ifs)
+    {
+        string line;
+        while(getline(ifs,line))
+        {
+            rm_nl(line);
+            if(line.empty()||'#' == line[0])
+                continue;
+            indent_cfg += line;
+        }
+        ifs.close();
+    }
+    if(indent_cfg.empty())
+        indent_cfg = "indent -kr -cli4 -nut -bl4 -bli0 -npsl";
+    indent_cfg +=" ";
+}
 void init()
 {
 	msi fm;
 	m_["\n"] = "";
 	m_["\r"] = "";
-	get_file_list(string(getenv("HOME"))+"/.fmt",fm);
+	get_file_list(string(getenv("HOME"))+"/.fmt",fm,-1,chk_map);
 	for(msi::const_iterator iter = fm.begin();iter!=fm.end();iter++)
 		init_file(iter->first,m_);
+    init_fmt_file((string(getenv("HOME"))+"/.fmt/indent.cfg").c_str());
+    
 }
 
 
@@ -166,22 +204,25 @@ string get_suffix(const string &fn)
 {
 	return strrchr(fn.c_str(),'.');
 }
+
 void indent_file(const string &fn)
 {
 	string tmp = tmpnam(NULL);
 	tmp+=get_suffix(fn);
 	ostringstream oss;
-	oss<<"indent -kr -cli4 -nut -bl4 -bli0 -npsl "<<fn<<" -o "<<tmp<<" && mv "<<tmp<<" "<<fn;
+	//oss<<"indent -kr -cli4 -nut -bl4 -bli0 -npsl "<<fn<<" -o "<<tmp<<" && mv "<<tmp<<" "<<fn;
+    oss<<indent_cfg<<fn<<" -o "<<tmp<<" && mv "<<tmp<<" "<<fn;
 	cout<<oss.str()<<endl;
 	system(oss.str().c_str());
 }
+
 void process(const char *fn,mss &m)
 {
 	if(access(fn,F_OK))
 		return;
-	procss_file(fn,m);
-	indent_file(fn);
-	procss_file(fn,m);
+    procss_file(fn,m);
+    indent_file(fn);
+    procss_file(fn,m);
 }
 int main(int argc,char **argv)
 {
