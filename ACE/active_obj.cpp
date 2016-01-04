@@ -16,7 +16,7 @@ public:
 //Initialization and termination methods
       Logger ();
   virtual ~ Logger (void);
-  virtual int open (void *);
+  virtual int open (void *);/*调用activate函数，activate 函数调用svc函数，创建线程*/
   virtual int close (u_long flags = 0);
   
 //The entry point for all threads created in the Logger
@@ -26,14 +26,16 @@ public:
 //Methods which can be invoked by client asynchronously.
 ///////////////////////////////////////////////////////
 //Log message
+/*这两个方法应该这样来实现：当客户调用它们时，它们实例化相
+应的方法对象类型，并将它放入任务的私有启用队列。*/
       ACE_Future < u_long > logMsg (const char *msg);
-  
 //Return the name of the Task
   ACE_Future < const char *>name (void);
   
 ///////////////////////////////////////////////////////
 //Actual implementation methods for the Logger
 ///////////////////////////////////////////////////////
+/*这两个方法的实际实现（也就是“真正地”完成所需工作的方法）*/
       u_long logMsg_i (const char *msg);
   const char *name_i ();
 private:char *name_;
@@ -257,14 +259,15 @@ int main (int, char *[])
 //Log a few messages on the logger
       for (size_t i = 0; i < 3; i++)
     
-  {
-    char *msg = new char[50];
-    ACE_DEBUG ((LM_DEBUG, "Issuing a non-blocking logging call\n"));
-    ACE_OS::sprintf (msg, "This is iteration %d", i);
-    logresult = logger->logMsg (msg);
-    
-        //Don鈥檛 use the log result here as it isn't that important...
-  } ACE_DEBUG ((LM_DEBUG, "(%t)Invoked all the log calls \
+	  {
+	    char *msg = new char[50];
+	    ACE_DEBUG ((LM_DEBUG, "Issuing a non-blocking logging call\n"));
+	    ACE_OS::sprintf (msg, "This is iteration %d", i);
+	    logresult = logger->logMsg (msg);
+	    
+	        //Don鈥檛 use the log result here as it isn't that important...
+	  } 
+	  ACE_DEBUG ((LM_DEBUG, "(%t)Invoked all the log calls \
                     and can now continue with other work \n"));
   
       //Do some work over here...
@@ -275,15 +278,15 @@ int main (int, char *[])
   
       //Check to "see" if the result of the name() call is available
       if (name.ready ())
-    ACE_DEBUG ((LM_DEBUG, "Name is ready! \n"));
+    	ACE_DEBUG ((LM_DEBUG, "Name is ready! \n"));
   
-  else
-    ACE_DEBUG ((LM_DEBUG, "Blocking till I get the result of that call \n"));
+  	  else
+   		ACE_DEBUG ((LM_DEBUG, "Blocking till I get the result of that call \n"));
   
       //obtain the underlying result from the future object.
-  const char *task_name;
-  name.get (task_name);
-  ACE_DEBUG ((LM_DEBUG, "(%t)==> The name of the task is: %s\n\n\n", task_name));
+	  const char *task_name;
+	  name.get (task_name);
+	  ACE_DEBUG ((LM_DEBUG, "(%t)==> The name of the task is: %s\n\n\n", task_name));
   
       //Wait for all threads to exit.
       ACE_Thread_Manager::instance ()->wait ();
