@@ -126,6 +126,8 @@ void init_file(const string &file,mss &m)
 		vstr ret = line_split(line,":");
 		if(!ret.size())
 			continue;
+		if(ret[0] == ret[1])
+			continue;
 		m[ret[0]] = ret[1];
 	}
 	ifs.close();
@@ -160,10 +162,14 @@ void procss_file(const string &fn,const mss &m)
 		rename(tmp_fn.c_str(),fn.c_str());
 	}
 }
-
+string get_suffix(const string &fn)
+{
+	return strrchr(fn.c_str(),'.');
+}
 void indent_file(const string &fn)
 {
 	string tmp = tmpnam(NULL);
+	tmp+=get_suffix(fn);
 	ostringstream oss;
 	oss<<"indent -kr -cli4 -nut -bl4 -bli0 -npsl "<<fn<<" -o "<<tmp<<" && mv "<<tmp<<" "<<fn;
 	cout<<oss.str()<<endl;
