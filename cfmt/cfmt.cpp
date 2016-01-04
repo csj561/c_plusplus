@@ -58,7 +58,7 @@ bool chk_indent(const char *fn)
        -1 		   All files.
 
 */
-
+#deine DT_ALL -1
 void get_file_list(const string &path,msi &m,int type = -1,chk chk_fn= NULL)
 {
 	struct stat st;

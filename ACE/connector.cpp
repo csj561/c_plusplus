@@ -10,7 +10,7 @@ using namespace std;
  
 #define HOSTNAME "127.0.0.1"
     
-#define PORT_NO 19999
+#define PORT_NO 10101
 //Create a Service Handler whose open() method will be called back
 //automatically. This class MUST derive from ACE_Svc_Handler which is an
 //interface and as can be seen is a template container class itself. The
@@ -25,9 +25,31 @@ class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH >
 //the open method which will be called back automatically after the
 //connection has been established.
 /*成功连接时自动调用open方法*/ 
-  public:int open(void *) {
+  public:
+  int open(void *) 
+  	{
         cout << "connector Connection established" << endl;
-}};
+		ACE_Reactor::instance()->register_handler(this,ACE_Event_Handler::READ_MASK);
+	
+	}
+  int handle_input(ACE_HANDLE)
+  	{
+  		char buf[100]={0};
+		ACE_Time_Value tv(0);
+		peer().recv_n(buf,100,&tv);
+		cout<<"get data ::"<<buf<<endl;
+		ACE_Reactor::instance()->register_handler(this,ACE_Event_Handler::WRITE_MASK);
+		return 0;
+  	}
+  int handle_output(ACE_HANDLE)
+  	{
+  		const char *buf="I got msg!!!";
+  		cout<<"sent msg :: "<<buf<<endl;
+		peer().send_n(buf,ACE_OS::strlen(buf));
+		ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::DONT_CALL|ACE_Event_Handler::WRITE_MASK);
+		return 0;
+  	}
+};
 
  typedef ACE_Connector < My_Svc_Handler,  ACE_SOCK_CONNECTOR > MyConnector;
 int main(int argc, char *argv[]) 

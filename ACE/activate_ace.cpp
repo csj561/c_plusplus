@@ -43,8 +43,9 @@ class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_MT_SYNCH >
             ACE_DEBUG((LM_DEBUG, "(%t)Sending message::>>"));
          
 //Send the data to the remote peer
-            ACE_DEBUG((LM_DEBUG, "Sent message1"));
-        peer().send_n("Message1", LENGTH_MSG_1);
+            ACE_DEBUG((LM_DEBUG, "Sent message1\n"));
+        peer().send_n("Message1", ACE_OS::strlen("Message1"));
+		ACE_OS::sleep(5);
     }                          //end send_message1
     int send_message2(void) {
          
@@ -52,8 +53,9 @@ class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_MT_SYNCH >
             ACE_DEBUG((LM_DEBUG, "(%t)Sending message::>>"));
          
 //Send the data to the remote peer
-            ACE_DEBUG((LM_DEBUG, "Sent Message2"));
-        peer().send_n("Message2", LENGTH_MSG_2);
+            ACE_DEBUG((LM_DEBUG, "Sent Message2\n"));
+        peer().send_n("Message2", ACE_OS::strlen("Message2"));
+		ACE_OS::sleep(2);
     }                          //end send_message_2
     int svc(void) {
         ACE_DEBUG((LM_DEBUG, "(%t) Svc thread \n"));
@@ -67,16 +69,16 @@ class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_MT_SYNCH >
     }
     int handle_input(ACE_HANDLE) {
         ACE_DEBUG((LM_DEBUG, "(%t) handle_input ::"));
-        char *data = new char[13];
+        char data[100]={0};
+		ACE_Time_Value tv(0);
          
 //Check if peer aborted the connection
-            if (peer().recv_n(data, 12) == 0)
+            if (peer().recv_n(data, 100,&tv) == 0)
              
         {
             printf("Peer probably aborted connection");
             return -1;         //de-register from the Reactor.
         }
-        101 
 //Show what you got..
             ACE_OS::printf("<< %s\n", data);
          
