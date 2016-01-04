@@ -27,29 +27,28 @@ class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM,
 {
   public:
 //Used by the two threads "globally" to determine their peer stream
-    static ACE_SOCK_Stream *Peer;
      
 //Thread ID used to identify the threads
         ACE_thread_t t_id;
     int open(void *) {
-        cout << "Acceptor: received new connection" << endl;
+        cout << "Acceptor: received new connection this:: " <<(unsigned long)this<< endl;
          
 //Register with the reactor to remember this handle
             Reactor::instance()->register_handler(this,
                                                   ACE_Event_Handler::READ_MASK);
          
 //Determine the peer stream and record it globally
-            MyServiceHandler::Peer = &peer();
          
 //Spawn new thread to send string every second
-            ACE_Thread::spawn((ACE_THR_FUNC) send_data, 0, THR_NEW_LWP,
+            ACE_Thread::spawn((ACE_THR_FUNC) send_data, &peer(), THR_NEW_LWP,
                               &t_id);
          
 //keep the service handler registered by returning 0 to the
 //reactor
             return 0;
     }
-    static void *send_data(void *) {
+    static void *send_data(void *p) {
+		ACE_SOCK_Stream *Peer = (ACE_SOCK_Stream *)p; 
         while (1)
              
         {
@@ -67,7 +66,7 @@ class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM,
         char *data = new char[128];
          ACE_Time_Value tv(0);
 //Check if peer aborted the connection
-            if (Peer->recv_n(data, 128,&tv) == 0)
+            if (peer().recv_n(data, 128,&tv) == 0)
              
         {
             cout << "Peer probably aborted connection" << endl;
@@ -83,9 +82,6 @@ class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM,
     }
 };
 
-  
-//Global stream identifier used by both threads
-    ACE_SOCK_Stream * MyServiceHandler::Peer = 0;
 void main_accept() 
 {
     ACE_INET_Addr addr(PORT_NO);

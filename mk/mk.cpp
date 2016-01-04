@@ -35,9 +35,17 @@ vstr fn_split(const string & fn)
 
 void init()
 {
-	ifstream ifs(".cfg");
-	getline(ifs,cflg);
-	ifs.close();
+	string fn(".cfg");
+	if(access(fn.c_str(),F_OK))
+	{
+		fn=string(getenv("HOME"))+"/.gcc_cfg";
+	}
+	ifstream ifs(fn.c_str());
+	if(ifs)
+	{
+		getline(ifs,cflg);
+		ifs.close();
+	}
 }
 int main(int argc,char **argv)
 {
