@@ -20,7 +20,8 @@ using namespace std;
     class My_Event_Handler;
 
 //Create the Acceptor class
-typedef ACE_Acceptor < My_Event_Handler, ACE_SOCK_ACCEPTOR >  MyAcceptor;
+typedef ACE_Acceptor < My_Event_Handler/*It's error. The SVC_HANDLER typically inherits from ACE_Svc_Handler.*/, 
+	ACE_SOCK_ACCEPTOR >  MyAcceptor;
 
 //Create an event handler similar to as seen in example 2. We have to
 //overload the get_handle() method and write the peer() method. We also
