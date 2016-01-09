@@ -1,1 +1,1 @@
--lACE -g -lpthread
+-lACE -g -lpthread  -fvisibility=hidden -fvisibility-inlines-hidden  -I$HOME/include -L$HOME/lib -lfool
