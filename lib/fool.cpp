@@ -58,7 +58,7 @@ namespace fool
 	}
 
 
-	static bool _cp(const char *src,const char *dest)
+	static bool _cp(const char *src,const char *dest,bool mv = false)
 	{
 		if(!is_exist(src))
 			goto err;
