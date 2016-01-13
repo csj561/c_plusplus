@@ -14,11 +14,18 @@
 #include <fool.h>
 #include <fstream>
 
-#define log_err(x,...) fprintf(stderr,x,##__VA_ARGS__)
-#define log_warn(x,...) fprintf(stdout,x,##__VA_ARGS__)
-
 #define BUFLEN 256
 #define K 1024
+
+#define log_err(x,...) fprintf(stderr,x,##__VA_ARGS__)
+#define log_warn(x,...) fprintf(stdout,x,##__VA_ARGS__)
+#define log_errno(x,...) do{ \
+							char buf[K],errbuf[BUFLEN]; \
+							strerror_r(errno,errbuf,BUFLEN); \
+							sprintf(buf,"[%s:%d]ERROR: %s [%s]",__FILE__,__LINE__,x,errbuf); \
+							fprintf(stderr,buf,##__VA_ARGS__); \
+						   }while(0)
+
 namespace fool
 {
 	using std::ifstream;
@@ -66,8 +73,21 @@ namespace fool
 		{
 			if(!is_exist(dest) ||is_regfile(dest))
 			{
-				if(!_cpfile2file(src,dest))
+				if(!mv || (-1 == rename(src,dest) && EXDEV == errno))
+				{
+					if(!_cpfile2file(src,dest))
+						goto err;
+					if(mv&&-1 == remove(src))
+					{
+						log_errno("Remove %s.\n",src);
+						goto err;
+					}
+				}
+				else 
+				{
+					log_errno("rename [%s to %s]",src,buf);
 					goto err;
+				}
 			}
 			else if(is_dir(dest))
 			{
@@ -78,63 +98,77 @@ namespace fool
 		}
 		else if(is_dir(src))
 		{
-			if(is_exist(dest))
+			bool _is_exist = is_exist(dest);
+			if(mv&& _is_exist)
 			{
 				log_err("%s is exist",dest);
 				goto err;
 			}
 			else
 			{
-				if(!mkdir(dest,0755))
+				int ret = 0; 
+				if(!mv ||(-1 == (ret= rename(src,dest)) && EXDEV == errno))
 				{
-					
-					DIR *dp=NULL;
-					dirent *pdir,dir;
-					dp=opendir(src);
-					if(!dp)
+					if(_is_exist ||( !_is_exist&&!mkdir(dest,0755)))
 					{
-						log_err("Open dir [%s] failed.\n",src);
+						
+						DIR *dp=NULL;
+						dirent *pdir,dir;
+						dp=opendir(src);
+						if(!dp)
+						{
+							log_err("Open dir [%s] failed.\n",src);
+							goto err;
+						}
+						do
+						{
+							readdir_r(dp,&dir,&pdir);
+							if(!pdir)
+								break;
+							if(!strcmp(".",pdir->d_name) || !strcmp("..",pdir->d_name))
+								continue;
+							if(DT_REG==pdir->d_type||DT_DIR==pdir->d_type)
+							{
+								char bufs[K],bufd[K];
+								strcpy(bufs,src);
+								strcat(bufs,"/");
+								strcat(bufs,pdir->d_name);
+
+								strcpy(bufd,dest);
+								strcat(bufd,"/");
+								strcat(bufd,pdir->d_name);
+								if(!_cp(bufs,bufd,mv))
+								{
+									closedir(dp);
+									log_err("Copy [%s] to [%s] err.\n",bufs,bufd);
+									goto err;
+								}
+							}
+							else
+							{
+								log_warn("Only suport copy reguler file and dir. [%s/%s] isn't a reguler or dir\n",
+									src,pdir->d_name);
+							}
+						}while(1);
+						closedir(dp);
+						if(mv&&-1== rmdir(src))
+						{
+							log_errno("rmdir %s.\n",src);
+							goto err;
+						}
+					}
+					else
+					{
+						log_errno("mkdir dir %s failed.\n",dest);
 						goto err;
 					}
-					do
-					{
-						readdir_r(dp,&dir,&pdir);
-						if(!pdir)
-							break;
-						if(!strcmp(".",pdir->d_name) || !strcmp("..",pdir->d_name))
-							continue;
-						if(DT_REG==pdir->d_type||DT_DIR==pdir->d_type)
-						{
-							char bufs[K],bufd[K];
-							strcpy(bufs,src);
-							strcat(bufs,"/");
-							strcat(bufs,pdir->d_name);
-
-							strcpy(bufd,dest);
-							strcat(bufd,"/");
-							strcat(bufd,pdir->d_name);
-							if(!_cp(bufs,bufd))
-							{
-								closedir(dp);
-								log_err("Copy [%s] to [%s] err.\n",bufs,bufd);
-								goto err;
-							}
-						}
-						else
-						{
-							log_warn("Only suport copy reguler file and dir. [%s/%s] isn't a reguler or dir\n",
-								src,pdir->d_name);
-						}
-					}while(1);
-					closedir(dp);
-				}
-				else
+				}	
+				else if(-1 == ret)
 				{
-					char err_buf[BUFLEN];
-					strerror_r(errno,err_buf,BUFLEN);
-					log_err("create dir %s failed.[%s]\n",dest,err_buf);
+					log_errno("rename [%s to %s]",src,dest);
 					goto err;
 				}
+				
 			}
 		}
 		return true;
@@ -142,7 +176,7 @@ namespace fool
 			return false;
 	}
 
-	bool cp(const char *src,const char *dest)
+	static bool cp_mv(const char *src,const char *dest, bool flags)
 	{
 		if(is_exist(dest)&&is_dir(dest))
 		{
@@ -150,9 +184,17 @@ namespace fool
 			strcpy(buf,dest);
 			strcat(buf,"/");
 			strcat(buf,get_filename(src));
-			return _cp(src,buf);
+			return _cp(src,buf,flags);
 		}
-		return _cp(src,dest);
+		return _cp(src,dest,flags);
+	}
+	bool cp(const char *src,const char *dest)
+	{
+		return cp_mv(src,dest,false);
+	}
+	bool mv(const char *src,const char *dest)
+	{
+		return cp_mv(src,dest,true);
 	}
 	const char *get_filename(const char *filepath)
 	{

@@ -13,5 +13,6 @@ namespace fool
 	bool is_dir(const char *filename);
 	const char *get_filename(const char *filepath);
 	bool cp(const char *src,const char *dest);
+	bool mv(const char *src,const char *dest);
 }
 #endif
