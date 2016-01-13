@@ -6,7 +6,7 @@ obj = fool.o
 CC = g++
 INC = fool.h
 .PHONY : all clean
-all : $(target) $(release) install test 
+all : $(target) $(release) test 
 
 $(target) : fool.o
 	ar cr  $@ $^
@@ -28,4 +28,4 @@ install:$(target) $(release)
 	install -t ~/include $(INC) 
 
 clean:
-	-rm *.o *.so test
+	-rm *.o *.so test.elf *.a
