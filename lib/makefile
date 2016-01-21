@@ -28,4 +28,4 @@ install:$(target) $(release)
 	install -t ~/include $(INC) 
 
 clean:
-	-rm *.o *.so test.elf *.a
+	-rm -f *.o *.so test.elf *.a
