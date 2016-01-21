@@ -1,0 +1,4 @@
+sudo mount -t cifs -o username=xxxx,password=xxxx,gid=1000,uid=1000  //192.168.81.1/share2 win_dir
+sudo mount -t cifs -o username=xxxx,password=xxxx,gid=1000,uid=1000,nounix,noserverino //192.168.81.1/share2 ../win_dir
+https://github.com/clpsz/Book-HFDP-Code
+https://github.com/clpsz/GOF-Design-Patterns
