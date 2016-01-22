@@ -29,6 +29,9 @@ enum EN_SCAN
 };
 #ifdef __cplusplus
 #include <iostream>
+#include <string>
+#include <list>
+
 namespace fool
 {
 	template<typename T>
@@ -49,6 +52,7 @@ namespace fool
 namespace fool
 {
 	COM_INTERFACES;
+	int scan_image(const char *fn,std::list<std::string> &ret);
 }
 #define FOOL_IS_CPLUSPLUS 1
 #else

@@ -231,6 +231,20 @@ namespace fool
 	{
 		return ::scan_err(err_code);
 	}
+
+	int scan_image(const char *fn,std::list<std::string> &ret_list)
+	{
+		char buf[10*K];
+		const char *p = buf;
+		ret_list.clear();
+		int ret = fool::scan_image(fn,buf,10*K);
+		for(int i = 0; i < ret; i++)
+		{
+			ret_list.push_back(p);
+			p+=strlen(p)+1;
+		}
+		return ret;
+	}
 }
 
 bool check_suffix(const char *fn,const char *suffix)
