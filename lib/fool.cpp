@@ -3,6 +3,8 @@
 *xyd 2016-1-9
 *
 */
+
+#define FOOL_CPP
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -17,7 +19,7 @@
 
 #define BUFLEN 256
 #define K 1024
-
+#define FOOL_CPP
 #define log_err(x,...) fprintf(stderr,x,##__VA_ARGS__)
 #define log_warn(x,...) fprintf(stdout,x,##__VA_ARGS__)
 #define log_errno(x,...) do{ \

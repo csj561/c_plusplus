@@ -6,6 +6,6 @@ using namespace std;
 
 int main(int argc,char **argv)
 {
-	cout<<check_suffix(argv[1],argv[2])<<endl;
+	cout<<fool::check_suffix(argv[1],argv[2])<<endl;
 	return 0;
 }
