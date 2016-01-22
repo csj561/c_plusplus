@@ -12,10 +12,12 @@ $(target) : fool.o
 	ar cr  $@ $^
 
 $(release) : fool.o
+#$(CC)   -shared -o $@ $^ 
 	$(CC) -fPIC  -shared -o $@ $^ 
 
 %.o:%.cpp
-	$(CC) -g -I./ -fvisibility=hidden -fvisibility-inlines-hidden $^ -c -o $@
+	$(CC) -g -I./  $^ -c -o $@
+#$(CC) -g -I./ -fvisibility=hidden -fvisibility-inlines-hidden $^ -c -o $@
 %.cpp:%.h
 
 test:test.cpp
@@ -23,7 +25,7 @@ test:test.cpp
 
 install:$(target) $(release)
 	install -t ~/lib $(target) 
-	strip $(release)
+#strip $(release)
 	install -t ~/lib $(release)
 	install -t ~/include $(INC) 
 

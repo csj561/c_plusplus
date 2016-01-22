@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include <fool.h>
 #include <fstream>
+#include <algorithm>
 
 #define BUFLEN 256
 #define K 1024
@@ -50,21 +51,7 @@ namespace fool
 		}
 		return false;
 	}
-	bool is_exist(const char *filepath)
-	{
-		return !access(filepath,F_OK);
-	}
-	bool is_regfile(const char *filename)
-	{
-		return S_ISREG(get_file_type(filename));
-	}
-
-	bool is_dir(const char *filename)
-	{
-		return S_ISDIR(get_file_type(filename));
-	}
-
-
+	
 	static bool _cp(const char *src,const char *dest,bool mv = false)
 	{
 		if(!is_exist(src))
@@ -188,13 +175,39 @@ namespace fool
 		}
 		return _cp(src,dest,flags);
 	}
+	
+	bool check_suffix(const char *fn,const char *suffix)
+	{
+		const char *result = std::find_end(fn,fn+strlen(fn),
+			suffix,suffix+strlen(suffix));
+		if(result != fn+strlen(fn)&&result != fn&&'.' == *(result-1))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	bool is_exist(const char *filepath)
+	{
+		return !access(filepath,F_OK);
+	}
+	bool is_regfile(const char *filename)
+	{
+		return S_ISREG(fool::get_file_type(filename));
+	}
+	
+	bool is_dir(const char *filename)
+	{
+		return S_ISDIR(fool::get_file_type(filename));
+	}
+	
 	bool cp(const char *src,const char *dest)
 	{
-		return cp_mv(src,dest,false);
+		return fool::cp_mv(src,dest,false);
 	}
 	bool mv(const char *src,const char *dest)
 	{
-		return cp_mv(src,dest,true);
+		return fool::cp_mv(src,dest,true);
 	}
 	const char *get_filename(const char *filepath)
 	{
@@ -204,5 +217,39 @@ namespace fool
 		while(filepath!=pe && '/' !=*--pe);
 		return '/' == *pe && filepath!=pe ? pe+1 : pe;
 	}
+
 }
+
+bool check_suffix(const char *fn,const char *suffix)
+{
+	return fool::check_suffix(fn,suffix);
+}
+
+bool is_exist(const char *filepath)
+{
+	return fool::is_exist(filepath);
+}
+bool is_regfile(const char *filename)
+{
+	return fool::is_regfile(filename);
+}
+
+bool is_dir(const char *filename)
+{
+	return fool::is_dir(filename);
+}
+
+bool cp(const char *src,const char *dest)
+{
+	return fool::cp(src,dest);
+}
+bool mv(const char *src,const char *dest)
+{
+	return fool::mv(src,dest);
+}
+const char *get_filename(const char *filepath)
+{
+	return get_filename(filepath);
+}
+
 
