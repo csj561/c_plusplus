@@ -20,7 +20,7 @@ static int get_data (const char *name,
 		png_create_read_struct(PNG_LIBPNG_VER_STRING,
 							   NULL, NULL, NULL);
 	if(!png) return -EN_SCAN_ERR_OPEN_IMG;
-	if(setjmp(png_jmpbuf(png))) exit(4);
+	if(setjmp(png_jmpbuf(png))) return -EN_SCAN_ERR_OPEN_IMG;
 	png_infop info = png_create_info_struct(png);
 	if(!info) 
 		return -EN_SCAN_ERR_OPEN_IMG;
