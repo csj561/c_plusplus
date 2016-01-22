@@ -8,11 +8,11 @@ int main(int argc,char **argv)
 {
 	char buf[1024];
 	const char *p;
-	int ret = fool::scan_image(argv[1],buf,1024);
+	list<string> l;
+	int ret = fool::scan_image(argv[1],l);
 	if(ret>0)
-		p=buf;
+		fool::Pri(l);
 	else
-		p=fool::scan_err(ret);
-	cout<<p<<endl;
+		cout<<fool::scan_err(ret)<<endl;
 	return 0;
 }

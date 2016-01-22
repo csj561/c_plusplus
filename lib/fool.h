@@ -35,14 +35,14 @@ enum EN_SCAN
 namespace fool
 {
 	template<typename T>
-	void p(const T &c)
+	void Pri(const T &c)
 	{
 		for(typename T::const_iterator iter=c.begin();iter!=c.end();iter++) 
 			std::cout<<*iter<<"\n";
 	}
 
 	template<typename T>
-	void pm(const T &c)
+	void PriM(const T &c)
 	{
 		for(typename T::const_iterator iter=c.begin();iter!=c.end();iter++) 
 			std::cout<<iter->first<<" <> "<<iter->second<<"\n";
