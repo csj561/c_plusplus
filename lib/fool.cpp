@@ -13,13 +13,17 @@
 #include <errno.h>
 #include <cstring>
 #include <dirent.h>
-#include <fool.h>
+#include "fool.h"
 #include <fstream>
 #include <algorithm>
+extern "C" {
+#include <png.h>
+
+}
+#include <zbar.h>
 
 #define BUFLEN 256
 #define K 1024
-#define FOOL_CPP
 #define log_err(x,...) fprintf(stderr,x,##__VA_ARGS__)
 #define log_warn(x,...) fprintf(stdout,x,##__VA_ARGS__)
 #define log_errno(x,...) do{ \
@@ -219,7 +223,14 @@ namespace fool
 		while(filepath!=pe && '/' !=*--pe);
 		return '/' == *pe && filepath!=pe ? pe+1 : pe;
 	}
-
+	int scan_image(const char *fn,char *buf,int bufsz)
+	{
+		return ::scan_image(fn,buf,bufsz);
+	}
+	const char *scan_err(int err_code)
+	{
+		return ::scan_err(err_code);
+	}
 }
 
 bool check_suffix(const char *fn,const char *suffix)
@@ -253,5 +264,4 @@ const char *get_filename(const char *filepath)
 {
 	return get_filename(filepath);
 }
-
 

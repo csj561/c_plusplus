@@ -6,6 +6,13 @@ using namespace std;
 
 int main(int argc,char **argv)
 {
-	cout<<fool::check_suffix(argv[1],argv[2])<<endl;
+	char buf[1024];
+	const char *p;
+	int ret = fool::scan_image(argv[1],buf,1024);
+	if(ret>0)
+		p=buf;
+	else
+		p=fool::scan_err(ret);
+	cout<<p<<endl;
 	return 0;
 }

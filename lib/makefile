@@ -2,26 +2,31 @@
 target = libfool.a
 release = libfool.so
 
-obj = fool.o
-CC = g++
+obj = fool.o fool_scan.o
+CC = gcc
+CXX = g++
 INC = fool.h
 .PHONY : all clean
 all : $(target) $(release) test 
 
-$(target) : fool.o
+$(target) : $(obj)
 	ar cr  $@ $^
 
-$(release) : fool.o
+$(release) : $(obj)
 #$(CC)   -shared -o $@ $^ 
 	$(CC) -fPIC  -shared -o $@ $^ 
 
+%.o:%.c
+#$(CC) -g -I./  $^ -c -o $@
+	$(CC) -g -I./ -I${HOME}/include   $^ -c -o $@
 %.o:%.cpp
-	$(CC) -g -I./  $^ -c -o $@
-#$(CC) -g -I./ -fvisibility=hidden -fvisibility-inlines-hidden $^ -c -o $@
+#$(CC) -g -I./  $^ -c -o $@
+	$(CXX) -g -I./ -I${HOME}/include  $^ -c -o $@
+#$(CXX) -g -I./ -I${HOME}/include -fvisibility=hidden -fvisibility-inlines-hidden $^ -c -o $@
 %.cpp:%.h
 
 test:test.cpp
-	$(CC) $^ -I./ -L./ -Wl,-Bstatic -lfool  -Wl,-Bdynamic -lm -lc -o $@.elf
+	$(CXX) $^ -I./ -L./ -L${HOME}/lib  -lfool -lzbar -lpng -o $@.elf
 
 install:$(target) $(release)
 	install -t ~/lib $(target) 
