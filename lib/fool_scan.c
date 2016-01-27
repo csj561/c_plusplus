@@ -28,13 +28,14 @@ static int get_data(const char *name, int *width, int *height, void **raw)
         /* configure for 8bpp grayscale input */ 
     int color = png_get_color_type(png, info);
     int bits = png_get_bit_depth(png, info);
+	int channels  = png_get_channels(png, info); /*获取通道数*/
     if (color & PNG_COLOR_TYPE_PALETTE)
         png_set_palette_to_rgb(png);
     if (color == PNG_COLOR_TYPE_GRAY && bits < 8)
         png_set_gray_1_2_4_to_8(png);
     if (bits == 16)
         png_set_strip_16(png);
-    if (color & PNG_COLOR_MASK_ALPHA)
+    if (color & (PNG_COLOR_MASK_ALPHA|PNG_COLOR_MASK_PALETTE)) // fuck pend me 3 days
         png_set_strip_alpha(png);
     if (color & PNG_COLOR_MASK_COLOR)
         png_set_rgb_to_gray_fixed(png, 1, -1, -1);
@@ -48,6 +49,7 @@ static int get_data(const char *name, int *width, int *height, void **raw)
     for (i = 0; i < *height; i++)
         rows[i] = *raw + (*width * i);
     png_read_image(png, rows);
+	png_destroy_read_struct(&png, &info, NULL);
     return 0;
 }
 
@@ -95,10 +97,9 @@ int scan_image(const char *fn, char *buf, int bufsz)
      
         /* extract results */ 
     const zbar_symbol_t *symbol = zbar_image_first_symbol(image);
-    for (; symbol; symbol = zbar_symbol_next(symbol))
-        
+    for (; symbol; symbol = zbar_symbol_next(symbol))  
     {
-        char line[1024];
+        char line[QRCODE_MAX_LEN];
         cnt++;
         is_find = true;
         
@@ -109,7 +110,7 @@ int scan_image(const char *fn, char *buf, int bufsz)
         
             //len +=sprintf(buf+len,"[%s]decoded %s symbol \"%s\"\n",
             //       argv[i],zbar_get_symbol_name(typ), data);
-            if (data_len >= 1024)
+            if (data_len >= QRCODE_MAX_LEN)
             
         {
             result = -EN_SCAN_ERR_LONG_INFO;
@@ -135,7 +136,7 @@ int scan_image(const char *fn, char *buf, int bufsz)
         /* clean up */ 
         //if(raw)
         //      free(raw);
-        if (image)
+    if (image)
         zbar_image_destroy(image);
     if (scanner)
         zbar_image_scanner_destroy(scanner);
@@ -163,10 +164,10 @@ int scan_image(const char *fn, char *buf, int bufsz)
        EN_SCAN_ERR_OPEN_IMG
        
      */ 
-    err_str[EN_SCAN_ERR_FMT] = "error formt image file, only support png image.";
-    err_str[EN_SCAN_ERR_SHORT_BUF] = "the out buf is too short to store the decode informations.";
-    err_str[EN_SCAN_ERR_LONG_INFO] = "the decode information is longer than 1024";
-    err_str[EN_SCAN_ERR_OPEN_IMG] = "open image file error.";
+    err_str[EN_SCAN_ERR_FMT] = "Error input format image file, only support png image.";
+    err_str[EN_SCAN_ERR_SHORT_BUF] = "The out buf is too short to store the decode informations.";
+    err_str[EN_SCAN_ERR_LONG_INFO] = MACRO_COMB("The decode information is longer than ",QRCODE_MAX_LEN) " .";
+    err_str[EN_SCAN_ERR_OPEN_IMG] = "Open image file error.";
     return err_str[-err_code];
 }
 

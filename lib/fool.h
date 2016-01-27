@@ -5,7 +5,8 @@
 */
 #ifndef FOOL_H
 #define FOOL_H
-
+#define QRCODE_MAX_LEN 1024
+#define MACRO_COMB(x,y) x#y
 /*CºÍC++¼æÈÝ½Ó¿Ú*/
 #define COM_INTERFACES \
 	bool is_exist(const char *filepath); \
@@ -16,7 +17,9 @@
 	bool mv(const char *src,const char *dest); \
 	bool check_suffix(const char *fn,const char *suffix); \
 	int scan_image(const char *fn,char *buf,int bufsz); \
-	const char *scan_err(int err_code);
+	const char *scan_err(int err_code); \
+	int qr_image_create(const char * text,const char *fn); \
+	const char *qr_image_err(int err_code);
 
 enum EN_SCAN
 {
@@ -26,6 +29,17 @@ enum EN_SCAN
 	EN_SCAN_ERR_LONG_INFO,
 	EN_SCAN_ERR_OPEN_IMG,
 	EN_SCAN_XXX
+};
+enum EN_ENCODE_QR
+{
+	EN_ENCODE_QR_OK =0,
+	EN_ENCODE_QR_ERR_FMT,
+	EN_ENCODE_QR_ERR_LONG_INFO,
+	EN_ENCODE_QR_ERR_NULL_INFO,
+	EN_ENCODE_QR_ERR_ENCODE,
+	EN_ENCODE_QR_ERR_OPENFILE,
+	EN_ENCODE_QR_ERR_MALLOC,
+	EN_ENCODE_QR_XXX
 };
 #ifdef __cplusplus
 #include <iostream>

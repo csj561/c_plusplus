@@ -6,6 +6,7 @@ using namespace std;
 
 int main(int argc,char **argv)
 {
+#if 0
 	char buf[1024];
 	const char *p;
 	list<string> l;
@@ -14,5 +15,9 @@ int main(int argc,char **argv)
 		fool::Pri(l);
 	else
 		cout<<fool::scan_err(ret)<<endl;
+#endif
+	int ret = fool::qr_image_create(argv[1],argv[2]);
+	
+	cout<<fool::qr_image_err(ret)<<endl;
 	return 0;
 }

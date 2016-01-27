@@ -4,4 +4,7 @@ https://github.com/clpsz/Book-HFDP-Code
 https://github.com/clpsz/GOF-Design-Patterns
 
 配置zbar
-./configure --prefix=`pwd`/_install  --disable-video --without-imagemagick CFLAGS="-DDEBUG_SVG -I/home/xyd/include -L/home/xyd/lib"  --without-gtk  --without-qt  --without-python
+./configure --prefix=`pwd`/_install  --disable-video --without-imagemagick CFLAGS="-DDEBUG_SVG -g -I/home/xyd/include -L/home/xyd/lib"  --without-gtk  --without-qt  --without-python
+
+编译qrencode需要先配置环境变量
+export PKG_CONFIG_PATH=/home/xyd/lib/pkgconfig/:$PKG_CONFIG_PATH

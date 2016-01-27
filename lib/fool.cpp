@@ -245,6 +245,14 @@ namespace fool
 		}
 		return ret;
 	}
+	int qr_image_create(const char * text,const char *fn)
+	{
+		return ::qr_image_create(text,fn);
+	}
+	const char * qr_image_err(int err_code)
+	{
+		return ::qr_image_err(err_code);
+	}
 }
 
 bool check_suffix(const char *fn,const char *suffix)

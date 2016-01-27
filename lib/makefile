@@ -2,7 +2,7 @@
 target = libfool.a
 release = libfool.so
 
-obj = fool.o fool_scan.o
+obj = fool.o fool_scan.o fool_qrencode.o
 CC = gcc
 CXX = g++
 INC = fool.h
@@ -27,7 +27,7 @@ $(release) : $(obj)
 %.cpp:%.h
 
 test:test.cpp
-	$(CXX) $^ -I./ -L./ -L${HOME}/lib  -lfool -lzbar -lpng -o $@.elf
+	$(CXX) $^ -g -I./ -L./ -L${HOME}/lib  -lfool -lzbar -lqrencode -lpng -o $@.elf
 
 install:$(target) $(release)
 	install -t ~/lib $(target) 
@@ -36,4 +36,4 @@ install:$(target) $(release)
 	install -t ~/include $(INC) 
 
 clean:
-	-rm -f *.o *.so test.elf *.a
+	-rm -f *.o *.so *.a
