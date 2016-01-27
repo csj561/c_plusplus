@@ -324,6 +324,68 @@ namespace fool
 	    ::utime(fn,&_src_timbuf);
 		return 0;
 	}
+
+	bool check_date(const char *datetime)
+	{        
+        int year = 0;
+        int month = 0;
+        int day = 0;
+        int _month_set1[] = {1,3,5,7,8,10,12}; 
+        int _month_set2[] = {4,6,9,11};
+        sscanf(datetime,"%4d%2d%2d",&year, &month, &day);
+        
+        if(_month_set1 + sizeof(_month_set1)/sizeof(_month_set1[0]) != find(_month_set1,
+        _month_set1 + sizeof(_month_set1)/sizeof(_month_set1[0]),month)) 
+        {
+            if (day > 31)
+            {
+                return false;
+            }
+        }
+        else if(_month_set2 + sizeof(_month_set2)/sizeof(_month_set2[0]) != find(_month_set2,
+            _month_set2 + sizeof(_month_set2)/sizeof(_month_set2[0]),month)) 
+        {
+            if (day > 30)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if(0 == year % 100)
+            {
+                if(0 == year % 400)
+                {
+                    if(day > 29)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if(day > 28)
+                    {
+                        return false;
+                    }
+                }
+            }
+            else if(0 == year % 4)
+            {
+                if(day > 29)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if(day > 28)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+	}
 }
 
 bool check_suffix(const char *fn,const char *suffix)
@@ -366,5 +428,10 @@ bool isspace_str(const char *str)
 int rm_space_line(const char *fn)
 {
 	return fool::rm_space_line(fn);
+}
+
+bool check_date(const char *datetime)
+{
+	return fool::check_date(datetime);
 }
 

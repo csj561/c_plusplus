@@ -15,13 +15,14 @@
 	const char *get_filename(const char *filepath); \
 	bool cp(const char *src,const char *dest); \
 	bool mv(const char *src,const char *dest); \
-	bool check_suffix(const char *fn,const char *suffix); \
+	bool check_suffix(const char *fn,const char *suffix);/*("/home/xyd/a.txt","txt")*/ \
 	int scan_image(const char *fn,char *buf,int bufsz); \
 	const char *scan_err(int err_code); \
 	int qr_image_create(const char * text,const char *fn); \
 	const char *qr_image_err(int err_code); \
 	bool isspace_str(const char *line); \
-	int rm_space_line(const char *fn);
+	int rm_space_line(const char *fn); \
+	bool check_date(const char *datetime); /*eg:20160201*/
 
 enum EN_SCAN
 {
