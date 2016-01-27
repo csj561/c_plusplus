@@ -325,6 +325,16 @@ namespace fool
 		return 0;
 	}
 
+	static bool _isdigit_str(const char *str,int len)
+	{
+		const char *last = str+(0==len ? strlen(str) : len);
+		return last == find_if_not(str,last,isdigit);
+	}
+
+	bool isdigit_str(const char *str)
+	{
+		return _isdigit_str(str,0);
+	}
 	bool check_date(const char *datetime)
 	{        
         int year = 0;
@@ -332,9 +342,11 @@ namespace fool
         int day = 0;
         int _month_set1[] = {1,3,5,7,8,10,12}; 
         int _month_set2[] = {4,6,9,11};
+		if(!datetime||8>strlen(datetime)||!_isdigit_str(datetime,8))
+			return false;
         sscanf(datetime,"%4d%2d%2d",&year, &month, &day);
         
-        if(_month_set1 + sizeof(_month_set1)/sizeof(_month_set1[0]) != find(_month_set1,
+        if(_month_set1 + sizeof(_month_set1)/sizeof(_month_set1[0]) != std::find(_month_set1,
         _month_set1 + sizeof(_month_set1)/sizeof(_month_set1[0]),month)) 
         {
             if (day > 31)
@@ -342,7 +354,7 @@ namespace fool
                 return false;
             }
         }
-        else if(_month_set2 + sizeof(_month_set2)/sizeof(_month_set2[0]) != find(_month_set2,
+        else if(_month_set2 + sizeof(_month_set2)/sizeof(_month_set2[0]) != std::find(_month_set2,
             _month_set2 + sizeof(_month_set2)/sizeof(_month_set2[0]),month)) 
         {
             if (day > 30)

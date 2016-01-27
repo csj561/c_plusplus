@@ -20,6 +20,6 @@ int main(int argc,char **argv)
 	
 	cout<<fool::qr_image_err(ret)<<endl;
 #endif
-	cout<<fool::rm_space_line(argv[1])<<endl;
+	cout<<fool::check_date(argv[1])<<endl;
 	return 0;
 }
