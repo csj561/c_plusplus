@@ -19,7 +19,9 @@
 	int scan_image(const char *fn,char *buf,int bufsz); \
 	const char *scan_err(int err_code); \
 	int qr_image_create(const char * text,const char *fn); \
-	const char *qr_image_err(int err_code);
+	const char *qr_image_err(int err_code); \
+	bool isspace_str(const char *line); \
+	int rm_space_line(const char *fn);
 
 enum EN_SCAN
 {

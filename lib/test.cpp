@@ -3,7 +3,6 @@
 #include <map>
 using namespace std;
 //using namespace fool;
-
 int main(int argc,char **argv)
 {
 #if 0
@@ -16,8 +15,11 @@ int main(int argc,char **argv)
 	else
 		cout<<fool::scan_err(ret)<<endl;
 #endif
+#if 0
 	int ret = fool::qr_image_create(argv[1],argv[2]);
 	
 	cout<<fool::qr_image_err(ret)<<endl;
+#endif
+	cout<<fool::rm_space_line(argv[1])<<endl;
 	return 0;
 }

@@ -16,6 +16,8 @@
 #include "fool.h"
 #include <fstream>
 #include <algorithm>
+#include <sys/types.h>
+#include <utime.h>
 extern "C" {
 #include <png.h>
 
@@ -37,6 +39,17 @@ namespace fool
 {
 	using std::ifstream;
 	using std::ofstream;
+	template<typename InputIter,typename UnaryPre>
+	InputIter find_if_not(InputIter iter1,InputIter iter2,UnaryPre pre)
+	{
+		while(iter1 != iter2)
+		{
+			if(!pre(*iter1))
+				return iter1;
+			iter1++;
+		}
+		return iter1;
+	}
 	static mode_t get_file_type(const char *fn)
 	{
 		struct stat st;
@@ -253,6 +266,64 @@ namespace fool
 	{
 		return ::qr_image_err(err_code);
 	}
+
+	bool isspace_str(const char *str)
+	{
+		const char *last = str+strlen(str);
+		return last == find_if_not(str,last,isspace);
+	}
+
+	int rm_space_line(const char *fn)
+	{
+		char buf[256];
+	    if(NULL == fn || 0 == strlen(fn))
+	    {
+	        return 0;
+	    }
+	    std::string tmp_file = std::string(fn) + "-" + get_filename((const char*)tmpnam(buf));
+
+	    /// 更新文件之后，保证文件的修改时间与更新之前相同
+	    struct stat _src_stat;
+	    if(-1 == ::stat(fn,&_src_stat))
+	    {
+	        return -errno;
+	    }
+	    ifstream ifs(fn);
+
+	    ofstream ofs(tmp_file.c_str());
+
+	    if(!ifs)
+	    {   
+	        /* 文件打开失败 */
+	        return -errno;
+	    }
+
+	    if(!ofs)
+	    {   
+	        /* 文件打开失败 */
+	        return -errno;
+	    }
+	    std::string line;
+	    while(getline(ifs,line))
+	    {
+	       if(isspace_str(line.c_str()))
+		   		continue;
+		   ofs<<line<<"\n";
+	    }
+
+	    ifs.close();
+	    ofs.close();
+	    if(::rename(tmp_file.c_str(),fn))
+	    {
+	        return -errno;
+	    }
+
+	    struct utimbuf _src_timbuf;
+	    _src_timbuf.actime = _src_stat.st_atime;
+	    _src_timbuf.modtime = _src_stat.st_mtime;
+	    ::utime(fn,&_src_timbuf);
+		return 0;
+	}
 }
 
 bool check_suffix(const char *fn,const char *suffix)
@@ -285,5 +356,15 @@ bool mv(const char *src,const char *dest)
 const char *get_filename(const char *filepath)
 {
 	return get_filename(filepath);
+}
+
+bool isspace_str(const char *str)
+{
+	return fool::isspace_str(str);
+}
+
+int rm_space_line(const char *fn)
+{
+	return fool::rm_space_line(fn);
 }
 
