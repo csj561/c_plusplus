@@ -398,6 +398,55 @@ namespace fool
         }
         return true;
 	}
+
+	/// ref http://kb.cnblogs.com/page/176945/
+	bool BM_find(const char *src,const char *key)
+	{
+		int bad_suffix[256]={-1}; /// 坏后缀映射表
+		int good_suffix=-1; /// 好后缀，默认为-1
+		int key_len = strlen(key);
+		for(int i=0;i<key_len;i++)
+			bad_suffix[key[i]]=i;
+		for(int i= key_len-2;i>=0;i--)
+			if(key+i>key&&key[i]==key[key_len-1])
+			{
+				good_suffix=i;
+				break;
+			}
+		const char *cur=src;
+		while(1)
+		{
+			for(int i = 0;i < key_len; i++ )
+				if('\0'==cur[i])
+					return false;
+			bool good_mark = false;
+			int i = 0;
+			for(i = key_len-1;i>=0;i--)
+			{
+				if(key[i] == cur[i])
+				{
+					if(0==i)
+						return true;
+					good_mark=true;
+				}
+				else 
+					break;
+			}
+			if(good_mark)
+				cur+=key_len-1-good_suffix;
+			/*后移位数 = 好后缀的位置 - 搜索词中的上一次出现位置
+		　　计算时，位置的取值以"好后缀"的最后一个字符为准。如果"好后缀"在搜索词中没有重复出现，
+			则它的上一次出现位置为 -1。*/
+			else
+				cur+=key_len-1-bad_suffix[cur[i]];
+			/*
+			后移位数 = 坏字符的位置 - 搜索词中的上一次出现位置
+　　		如果"坏字符"不包含在搜索词之中，则上一次出现位置为 -1。
+			*/
+			
+		}
+		return false;
+	}
 }
 
 bool check_suffix(const char *fn,const char *suffix)
@@ -429,7 +478,7 @@ bool mv(const char *src,const char *dest)
 }
 const char *get_filename(const char *filepath)
 {
-	return get_filename(filepath);
+	return fool::get_filename(filepath);
 }
 
 bool isspace_str(const char *str)
@@ -446,4 +495,10 @@ bool check_date(const char *datetime)
 {
 	return fool::check_date(datetime);
 }
+
+bool BM_find(const char *src,const char *key)
+{
+	return fool::BM_find(src,key);
+}
+
 

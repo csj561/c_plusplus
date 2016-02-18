@@ -20,6 +20,9 @@ int main(int argc,char **argv)
 	
 	cout<<fool::qr_image_err(ret)<<endl;
 #endif
+#if 0
 	cout<<fool::check_date(argv[1])<<endl;
+#endif
+	cout<<fool::BM_find(argv[1],argv[2])<<endl;
 	return 0;
 }

@@ -22,7 +22,8 @@
 	const char *qr_image_err(int err_code); \
 	bool isspace_str(const char *line); \
 	int rm_space_line(const char *fn); \
-	bool check_date(const char *datetime); /*eg:20160201*/
+	bool check_date(const char *datetime); /*eg:20160201*/ \
+	bool BM_find(const char *src,const char *str); /*×Ö·û´®Æ¥ÅäµÄBoyer-MooreËã·¨*/
 
 enum EN_SCAN
 {
