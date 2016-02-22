@@ -25,8 +25,15 @@ int main(int argc,char **argv)
 #if 0
 	cout<<fool::check_date(argv[1])<<endl;
 #endif
+#if 1
 	string s = argv[1];
 	fool::replace_str(s,argv[2],argv[3]);
 	cout<<argv[1]<<endl<<s<<endl;
-	return 0;
+	
+#endif
+#if 0
+	cout<<fool::BM_find(argv[1],argv[2])<<endl;
+#endif
+return 0;
+
 }

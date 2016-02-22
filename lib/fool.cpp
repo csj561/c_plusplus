@@ -400,7 +400,7 @@ namespace fool
 		for(int i=0;i<key_len;i++)
 			bad_suffix[key[i]]=i;
 		for(int i= key_len-2;i>=0;i--)
-			if(key+i>key&&key[i]==key[key_len-1])
+			if(key+i>=key&&key[i]==key[key_len-1])
 			{
 				good_suffix=i;
 				break;
