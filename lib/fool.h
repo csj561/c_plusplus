@@ -23,7 +23,8 @@
 	bool isspace_str(const char *line); \
 	int rm_space_line(const char *fn); \
 	bool check_date(const char *datetime); /*eg:20160201*/ \
-	const char * BM_find(const char *src,const char *str); /*×Ö·û´®Æ¥ÅäµÄBoyer-MooreËã·¨*/
+	const char * BM_find(const char *src,const char *str); /*×Ö·û´®Æ¥ÅäµÄBoyer-MooreËã·¨*/ \
+	char * replace_str(const char *src,const char *ostr,const char *nstr);
 
 enum EN_SCAN
 {
@@ -49,6 +50,7 @@ enum EN_ENCODE_QR
 #include <iostream>
 #include <string>
 #include <list>
+#include <algorithm>
 
 namespace fool
 {
@@ -65,12 +67,44 @@ namespace fool
 		for(typename T::const_iterator iter=c.begin();iter!=c.end();iter++) 
 			std::cout<<iter->first<<" <> "<<iter->second<<"\n";
 	}
+	template<typename InputIter,typename UnaryPre>
+	InputIter find_if_not(InputIter iter1,InputIter iter2,UnaryPre pre)
+	{
+		while(iter1 != iter2)
+		{
+			if(!pre(*iter1))
+				return iter1;
+			iter1++;
+		}
+		return iter1;
+	}
+	template<typename InputIter1,typename InputIter2>
+	int count_blk(InputIter1 iter1_beg,InputIter1 iter1_end,
+				InputIter2 iter2_beg,InputIter2 iter2_end)
+	{
+		int count=0;
+		int iter2_len=0;
+		InputIter1 cur=iter1_beg;
+		InputIter2 t = iter2_beg;
+		
+		while(t++!=iter2_end)
+			iter2_len++;
+		while(iter1_end!=(cur=std::search(cur,iter1_end,iter2_beg,iter2_end)))
+		{
+			count++;
+			for(int i=0; i<iter2_len;i++)
+				cur++;
+		}
+		return count;
+	}
 
 }
 namespace fool
 {
 	COM_INTERFACES;
 	int scan_image(const char *fn,std::list<std::string> &ret);
+	const char *strstr(const char *src,const char *str);
+	void replace_str(std::string &str,const char *ostr,const char *nstr);
 }
 #define FOOL_IS_CPLUSPLUS 1
 #else

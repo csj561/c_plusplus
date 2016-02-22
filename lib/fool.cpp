@@ -39,17 +39,7 @@ namespace fool
 {
 	using std::ifstream;
 	using std::ofstream;
-	template<typename InputIter,typename UnaryPre>
-	InputIter find_if_not(InputIter iter1,InputIter iter2,UnaryPre pre)
-	{
-		while(iter1 != iter2)
-		{
-			if(!pre(*iter1))
-				return iter1;
-			iter1++;
-		}
-		return iter1;
-	}
+	
 	static mode_t get_file_type(const char *fn)
 	{
 		struct stat st;
@@ -406,7 +396,7 @@ namespace fool
 		int good_suffix=-1; /// 好后缀，默认为-1
 		int key_len = strlen(key);
 		const char *ret=NULL;
-		memset(bad_suffix,-1,sizeof(bad_suffix));
+		memset(bad_suffix,-1,sizeof(bad_suffix));/// 编译器并不保证把数组初始化为-1
 		for(int i=0;i<key_len;i++)
 			bad_suffix[key[i]]=i;
 		for(int i= key_len-2;i>=0;i--)
@@ -452,6 +442,43 @@ namespace fool
 			cur+=jump;
 		}
 		return ret;
+	}
+
+	const char *strstr(const char *src,const char *str)
+	{
+		return BM_find(src,str);
+	}
+
+	char * replace_str(const char *src,const char *ostr,const char *nstr)
+	{
+		const char *p=src;
+		const char *cur=src;
+		int src_len = strlen(src);
+		int ostr_len = strlen(ostr);
+		int nstr_len = strlen(nstr);
+		int count = count_blk(src,src+src_len,ostr,ostr+ostr_len);
+		int malloc_size=  src_len - count*ostr_len+ count*nstr_len + 1;
+		char *buf=(char *)malloc(malloc_size);
+		if(!buf)
+			return NULL;
+		memset(buf,0,malloc_size);
+		char *ret=buf;
+		while((p=strstr(cur,ostr)))
+		{
+			strncpy(buf,cur,p-cur);
+			strcat(buf,nstr);
+			buf+=p-cur+nstr_len;
+			cur=p+ostr_len;
+		}
+		strcat(buf,cur);
+		return ret;
+	}
+
+	void replace_str(std::string &str,const char *ostr,const char *nstr)
+	{
+		char *p = replace_str(str.c_str(),ostr,nstr);
+		str=p;
+		free(p);
 	}
 }
 
@@ -505,6 +532,11 @@ bool check_date(const char *datetime)
 const char * BM_find(const char *src,const char *key)
 {
 	return fool::BM_find(src,key);
+}
+
+char * replace_str(const char *src,const char *ostr,const char *nstr)
+{
+	return fool::replace_str(src,ostr,nstr);
 }
 
 
