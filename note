@@ -8,3 +8,9 @@ https://github.com/clpsz/GOF-Design-Patterns
 
 编译qrencode需要先配置环境变量
 export PKG_CONFIG_PATH=/home/xyd/lib/pkgconfig/:$PKG_CONFIG_PATH
+
+安装crypto
+ sudo apt-get install libcrypto++-dev
+
+ Redis C++ 库
+ https://github.com/redis/hiredis.git

@@ -396,7 +396,8 @@ namespace fool
 		int good_suffix=-1; /// 好后缀，默认为-1
 		int key_len = strlen(key);
 		const char *ret=NULL;
-		memset(bad_suffix,-1,sizeof(bad_suffix));/// 编译器并不保证把数组初始化为-1
+		for(int i=0;i<sizeof(bad_suffix)/sizeof(bad_suffix[0]);i++) 
+			bad_suffix[i]=-1;/// 编译器并不保证把数组初始化为-1
 		for(int i=0;i<key_len;i++)
 			bad_suffix[key[i]]=i;
 		for(int i= key_len-2;i>=0;i--)

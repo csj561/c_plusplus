@@ -19,6 +19,8 @@ using namespace std;
 //is ACE_SOCK_STREAM. The second is the internal synchronization
 //mechanism it could use. Since we have a single threaded application we
 //pass it a "null" lock which will do nothing.
+int a=0;
+
 class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH > 
 {
      
@@ -30,7 +32,9 @@ class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH >
   	{
         cout << "connector Connection established" << endl;
 		ACE_Reactor::instance()->register_handler(this,ACE_Event_Handler::READ_MASK);
-	
+		if(ACE_OS::fork()==0)
+			a=5;
+		ACE_Reactor::instance()->register_handler(this,ACE_Event_Handler::WRITE_MASK);
 	}
   int handle_input(ACE_HANDLE)
   	{
@@ -38,12 +42,13 @@ class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH >
 		ACE_Time_Value tv(0);
 		peer().recv_n(buf,100,&tv);
 		cout<<"get data ::"<<buf<<endl;
-		ACE_Reactor::instance()->register_handler(this,ACE_Event_Handler::WRITE_MASK);
+		
 		return 0;
   	}
   int handle_output(ACE_HANDLE)
   	{
-  		const char *buf="I got msg!!!";
+  		ACE_OS::sleep(a);
+  		const char *buf="I got msg!";
   		cout<<"sent msg :: "<<buf<<endl;
 		peer().send_n(buf,ACE_OS::strlen(buf));
 		ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::DONT_CALL|ACE_Event_Handler::WRITE_MASK);

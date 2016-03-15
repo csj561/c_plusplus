@@ -6,13 +6,13 @@
 #include <iostream>
 using namespace std;
 #define PORT_NUM 10101
-#define DATA_SIZE 12
+#define DATA_SIZE 120
 //forward declaration
 class My_Svc_Handler;
 
 //Create the Acceptor class
 typedef ACE_Acceptor < My_Svc_Handler, ACE_SOCK_ACCEPTOR >  MyAcceptor;
-
+int a=0;
 //Create a service handler similar to as seen in example 1. Except this
 //time include the handle_input() method which will be called back
 //automatically by the reactor when new data arrives on the newly
@@ -37,8 +37,13 @@ class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH >
 //reference to the underlying stream of the service handler class
 //we call recv_n() on it to read the data which has been received.
 //This data is stored in the data array and then printed out
-            peer().recv_n(data, DATA_SIZE);/*peer()方法返回对底层的对端流的引用*/
+		ACE_Time_Value t(0,0);
+		for(int i=0;i<DATA_SIZE;i++)
+			data[i]=0;
+        peer().recv_n(data, DATA_SIZE-1,&t);/*peer()方法返回对底层的对端流的引用*/
         ACE_OS::printf("<< %s\n", data);
+		ACE_OS::sprintf(data,"%d",a++);
+		peer().send_n(data,ACE_OS::strlen(data));
         
 //keep yourself registered with the reactor
             return 0;

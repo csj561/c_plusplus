@@ -7,6 +7,8 @@
 #define FOOL_H
 #define QRCODE_MAX_LEN 1024
 #define MACRO_COMB(x,y) x#y
+
+struct pre_tree;
 /*C和C++兼容接口*/
 #define COM_INTERFACES \
 	bool is_exist(const char *filepath); \
@@ -24,7 +26,11 @@
 	int rm_space_line(const char *fn); \
 	bool check_date(const char *datetime); /*eg:20160201*/ \
 	const char * BM_find(const char *src,const char *str); /*字符串匹配的Boyer-Moore算法*/ \
-	char * replace_str(const char *src,const char *ostr,const char *nstr);
+	char * replace_str(const char *src,const char *ostr,const char *nstr); \
+	pre_tree * pre_create_pretree(); /*prefix tree*/ \
+	bool pre_add_item(pre_tree *p_tree,const char *,void *); \
+	void *pre_find(const char *,int ); \
+	void pre_destory_pretree(pre_tree *);
 
 enum EN_SCAN
 {
