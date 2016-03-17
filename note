@@ -13,4 +13,10 @@ export PKG_CONFIG_PATH=/home/xyd/lib/pkgconfig/:$PKG_CONFIG_PATH
  sudo apt-get install libcrypto++-dev
 
  Redis C++ 库
- https://github.com/redis/hiredis.git
+ https://github.com/redis/hiredis.git 
+
+ 查看所有的源（可以安装的）
+ apt-cache search package
+
+ 查看所有已经安装的包（软件）
+ dpkg -l
