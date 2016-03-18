@@ -20,3 +20,6 @@ export PKG_CONFIG_PATH=/home/xyd/lib/pkgconfig/:$PKG_CONFIG_PATH
 
  查看所有已经安装的包（软件）
  dpkg -l
+
+ ice地址
+ https://github.com/zeroc-ice/ice.git

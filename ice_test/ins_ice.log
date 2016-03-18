@@ -1,0 +1,55 @@
+ 1332  sudo apt-get install mysql
+ 1333  sudo apt-get install mysql-server
+ 1507  sudo apt-get install disk
+ 1700  man apt-get
+ 1701  sudo apt-get install -y maven
+ 1833  sudo apt-get install  libmysql++-dev
+ 1899  sudo apt-get install xmllint
+ 1900  sudo apt-get install xmlint
+ 1901  sudo apt-get  install libxml2-utils
+ 2001  sudo apt-get install libmcpp-dev
+ 2013  sudo apt-get install bzip2
+ 2014  sudo apt-get install libbz2-dev
+ 2015  sudo apt-get install expat
+ 2021  sudo apt-get install libexpat1-dev
+ 2023  sudo apt-get install liblmdb-dev
+ 2027  sudo apt-get install  libbluetooth-dev
+ 2029  sudo apt-get install  libdbus-glib1.0-cil-dev 
+ 2031  sudo apt-get install  libdbus1.0-cil-dev
+ 2033  sudo apt-get install dbus
+ 2036  sudo apt-get install  libdbus-glib-1-dev
+ 2164  sudo apt-get install expat
+ 2165  history |grep apt-get 
+ 2166  history |grep apt-get > ~/ins_ice.log
+ 1332  sudo apt-get install mysql
+ 1333  sudo apt-get install mysql-server
+ 1507  sudo apt-get install disk
+ 1700  man apt-get
+ 1701  sudo apt-get install -y maven
+ 1833  sudo apt-get install  libmysql++-dev
+ 1899  sudo apt-get install xmllint
+ 1900  sudo apt-get install xmlint
+ 1901  sudo apt-get  install libxml2-utils
+ 2096  sudo apt-get install expat
+ 2134  history |grep apt-get
+ 2135  history |grep apt-get >> ~/ins_ice.log
+ 1332  sudo apt-get install mysql
+ 1333  sudo apt-get install mysql-server
+ 1507  sudo apt-get install disk
+ 1700  man apt-get
+ 1701  sudo apt-get install -y maven
+ 1833  sudo apt-get install  libmysql++-dev
+ 1899  sudo apt-get install xmllint
+ 1900  sudo apt-get install xmlint
+ 1901  sudo apt-get  install libxml2-utils
+ 2019  history |grep apt-get >> ~/ins_ice.log
+ 1332  sudo apt-get install mysql
+ 1333  sudo apt-get install mysql-server
+ 1507  sudo apt-get install disk
+ 1700  man apt-get
+ 1701  sudo apt-get install -y maven
+ 1833  sudo apt-get install  libmysql++-dev
+ 1899  sudo apt-get install xmllint
+ 1900  sudo apt-get install xmlint
+ 1901  sudo apt-get  install libxml2-utils
+ 2014  history |grep apt-get >> ~/ins_ice.log
