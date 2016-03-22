@@ -22,6 +22,8 @@ int doMenu ()
   while (c != 'q')
     
   {
+    while(c=='\n')
+	    c=getchar();
     switch (c)
       
     {
@@ -64,7 +66,9 @@ int main (int argc, char **argv)
     pCommunicator = Ice::initialize (tmpargc, tmpargv);
     pObject = pCommunicator->stringToProxy (buf);
     pProxy = WG::WGTestIcePrx::checkedCast (pObject);
-    return doMenu ();
+    doMenu ();
+    if(pCommunicator)
+	    pCommunicator->destroy();
   }
   catch (const Ice::Exception & ex) 
   {
