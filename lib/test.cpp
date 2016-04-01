@@ -35,12 +35,13 @@ int main(int argc,char **argv)
 	cout<<fool::BM_find(argv[1],argv[2])<<endl;
 #endif
 
-#if 1
+#if 0
 	map<int,int> m;
 	int &i=m[10];
 	i=199;
 	fool::PriM(m);
 #endif
+	XDEG("%d",100);
 return 0;
 
 }

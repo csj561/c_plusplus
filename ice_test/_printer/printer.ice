@@ -2,6 +2,6 @@ module Pri
 {
 	interface Printer
 	{
-		string pStr(string s);
+		string pStr(out string s);
 	};
 };

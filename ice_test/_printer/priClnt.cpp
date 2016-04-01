@@ -17,8 +17,12 @@ int main(int argc,char **argv)
 		PrinterPrx printer = PrinterPrx::checkedCast(base);
 		if (!printer)
 			throw "Invalid proxy";
-		string ret = printer->pStr("Hello World!");
-		cout<<ret<<endl;
+		string s="haha... ";
+		int i=10000;
+		cout<<"start..."<<endl;
+		while(i--)
+			printer->pStr(s);
+		cout<<"end..."<<endl;
 	}
 	catch(exception e)
 	{

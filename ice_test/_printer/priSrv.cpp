@@ -6,8 +6,8 @@
 using namespace std;
 class PriSrv:public Pri::Printer
 {
-	virtual string pStr(const string & s,const Ice::Current &)
-	{cout<<s<<endl;return s+"deal";}
+	virtual string pStr(string & s,const Ice::Current &)
+	{cout<<s<<endl;s+=" done ";return s+" deal ";}
 };
 
 int main(int argc,char **argv)

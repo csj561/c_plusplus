@@ -67,30 +67,41 @@ class PrinterPrx : public virtual ::Ice::Proxy<PrinterPrx, ::Ice::ObjectPrx>
 {
 public:
 
-    ::std::string pStr(const ::std::string& __p_s, const ::Ice::Context& __ctx = Ice::noExplicitContext)
+    struct Result_pStr
     {
-        return 
-        makePromiseOutgoing<::std::string>(true, this, &Pri::PrinterPrx::__pStr, __p_s, __ctx).get();
+        ::std::string s;
+        ::std::string returnValue;
+    };
+
+    ::std::string pStr(::std::string& __p_s, const ::Ice::Context& __ctx = Ice::noExplicitContext)
+    {
+        auto __result = 
+        makePromiseOutgoing<Result_pStr>(true, this, &Pri::PrinterPrx::__pStr, __ctx).get();
+        __p_s = ::std::move(__result.s);
+        return ::std::move(__result.returnValue);
     }
 
     ::std::function<void ()>
-    pStr_async(const ::std::string& __p_s, 
-               ::std::function<void (::std::string)> __response,
+    pStr_async(::std::function<void (::std::string, ::std::string)> __response,
                ::std::function<void (::std::exception_ptr)> __ex = nullptr,
                ::std::function<void (bool)> __sent = nullptr,
                const ::Ice::Context& __ctx = Ice::noExplicitContext)
     {
-        return makeLambdaOutgoing<::std::string>(__response, __ex, __sent, this, &Pri::PrinterPrx::__pStr, __p_s, __ctx);
+        auto __responseCb = [__response](Result_pStr&& result)
+        {
+            __response(::std::move(result.returnValue), ::std::move(result.s));
+        };
+        return makeLambdaOutgoing<Result_pStr>(__responseCb, __ex, __sent, this, &Pri::PrinterPrx::__pStr, __ctx);
     }
 
     template<template<typename> class P = ::std::promise>
-    auto pStr_async(const ::std::string& __p_s, const ::Ice::Context& __ctx = Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::std::string>>().get_future())
+    auto pStr_async(const ::Ice::Context& __ctx = Ice::noExplicitContext)
+        -> decltype(::std::declval<P<Result_pStr>>().get_future())
     {
-        return makePromiseOutgoing<::std::string, P>(false, this, &Pri::PrinterPrx::__pStr, __p_s, __ctx);
+        return makePromiseOutgoing<Result_pStr, P>(false, this, &Pri::PrinterPrx::__pStr, __ctx);
     }
 
-    void __pStr(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::std::string>>&, const ::std::string&, const ::Ice::Context& = Ice::noExplicitContext);
+    void __pStr(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<Result_pStr>>&, const ::Ice::Context& = Ice::noExplicitContext);
 
     static const ::std::string& ice_staticId();
 
@@ -116,7 +127,7 @@ public:
     virtual const ::std::string& ice_id(const ::Ice::Current& = ::Ice::noExplicitCurrent) const;
     static const ::std::string& ice_staticId();
 
-    virtual ::std::string pStr(::std::string, const ::Ice::Current& = ::Ice::noExplicitCurrent) = 0;
+    virtual ::std::string pStr(::std::string&, const ::Ice::Current& = ::Ice::noExplicitCurrent) = 0;
 
     ::Ice::DispatchStatus ___pStr(::IceInternal::Incoming&, const ::Ice::Current&);
 
@@ -179,37 +190,37 @@ namespace Pri
 class Printer : public virtual ::IceProxy::Ice::Proxy< ::IceProxy::Pri::Printer, ::IceProxy::Ice::Object>
 {
 public:
-    ::std::string pStr(const ::std::string& __p_s, const ::Ice::Context& __ctx = ::Ice::noExplicitContext);
+    ::std::string pStr(::std::string& __p_s, const ::Ice::Context& __ctx = ::Ice::noExplicitContext);
 
-    ::Ice::AsyncResultPtr begin_pStr(const ::std::string& __p_s, const ::Ice::Context& __ctx = ::Ice::noExplicitContext)
+    ::Ice::AsyncResultPtr begin_pStr(const ::Ice::Context& __ctx = ::Ice::noExplicitContext)
     {
-        return __begin_pStr(__p_s, __ctx, ::IceInternal::__dummyCallback, 0);
+        return __begin_pStr(__ctx, ::IceInternal::__dummyCallback, 0);
     }
 
-    ::Ice::AsyncResultPtr begin_pStr(const ::std::string& __p_s, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_pStr(const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return __begin_pStr(__p_s, ::Ice::noExplicitContext, __del, __cookie);
+        return __begin_pStr(::Ice::noExplicitContext, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_pStr(const ::std::string& __p_s, const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_pStr(const ::Ice::Context& __ctx, const ::Ice::CallbackPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return __begin_pStr(__p_s, __ctx, __del, __cookie);
+        return __begin_pStr(__ctx, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_pStr(const ::std::string& __p_s, const ::Pri::Callback_Printer_pStrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_pStr(const ::Pri::Callback_Printer_pStrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return __begin_pStr(__p_s, ::Ice::noExplicitContext, __del, __cookie);
+        return __begin_pStr(::Ice::noExplicitContext, __del, __cookie);
     }
 
-    ::Ice::AsyncResultPtr begin_pStr(const ::std::string& __p_s, const ::Ice::Context& __ctx, const ::Pri::Callback_Printer_pStrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
+    ::Ice::AsyncResultPtr begin_pStr(const ::Ice::Context& __ctx, const ::Pri::Callback_Printer_pStrPtr& __del, const ::Ice::LocalObjectPtr& __cookie = 0)
     {
-        return __begin_pStr(__p_s, __ctx, __del, __cookie);
+        return __begin_pStr(__ctx, __del, __cookie);
     }
 
-    ::std::string end_pStr(const ::Ice::AsyncResultPtr&);
+    ::std::string end_pStr(::std::string& __p_s, const ::Ice::AsyncResultPtr&);
     
 private:
-    ::Ice::AsyncResultPtr __begin_pStr(const ::std::string&, const ::Ice::Context&, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
+    ::Ice::AsyncResultPtr __begin_pStr(const ::Ice::Context&, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& __cookie = 0);
     
 public:
     
@@ -235,7 +246,7 @@ public:
     virtual const ::std::string& ice_id(const ::Ice::Current& = ::Ice::noExplicitCurrent) const;
     static const ::std::string& ice_staticId();
 
-    virtual ::std::string pStr(const ::std::string&, const ::Ice::Current& = ::Ice::noExplicitCurrent) = 0;
+    virtual ::std::string pStr(::std::string&, const ::Ice::Current& = ::Ice::noExplicitCurrent) = 0;
     ::Ice::DispatchStatus ___pStr(::IceInternal::Incoming&, const ::Ice::Current&);
 
     virtual ::Ice::DispatchStatus __dispatch(::IceInternal::Incoming&, const ::Ice::Current&);
@@ -271,7 +282,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const ::std::string&);
+    typedef void (T::*Response)(const ::std::string&, const ::std::string&);
 
     CallbackNC_Printer_pStr(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -281,10 +292,11 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& __result) const
     {
         ::Pri::PrinterPrx __proxy = ::Pri::PrinterPrx::uncheckedCast(__result->getProxy());
+        ::std::string s;
         ::std::string __ret;
         try
         {
-            __ret = __proxy->end_pStr(__result);
+            __ret = __proxy->end_pStr(s, __result);
         }
         catch(const ::Ice::Exception& ex)
         {
@@ -293,7 +305,7 @@ public:
         }
         if(_response)
         {
-            (::IceInternal::CallbackNC<T>::_callback.get()->*_response)(__ret);
+            (::IceInternal::CallbackNC<T>::_callback.get()->*_response)(__ret, s);
         }
     }
 
@@ -303,13 +315,13 @@ public:
 };
 
 template<class T> Callback_Printer_pStrPtr
-newCallback_Printer_pStr(const IceUtil::Handle<T>& instance, void (T::*cb)(const ::std::string&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_Printer_pStr(const IceUtil::Handle<T>& instance, void (T::*cb)(const ::std::string&, const ::std::string&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_Printer_pStr<T>(instance, cb, excb, sentcb);
 }
 
 template<class T> Callback_Printer_pStrPtr
-newCallback_Printer_pStr(T* instance, void (T::*cb)(const ::std::string&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_Printer_pStr(T* instance, void (T::*cb)(const ::std::string&, const ::std::string&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_Printer_pStr<T>(instance, cb, excb, sentcb);
 }
@@ -323,7 +335,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const ::std::string&, const CT&);
+    typedef void (T::*Response)(const ::std::string&, const ::std::string&, const CT&);
 
     Callback_Printer_pStr(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -333,10 +345,11 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& __result) const
     {
         ::Pri::PrinterPrx __proxy = ::Pri::PrinterPrx::uncheckedCast(__result->getProxy());
+        ::std::string s;
         ::std::string __ret;
         try
         {
-            __ret = __proxy->end_pStr(__result);
+            __ret = __proxy->end_pStr(s, __result);
         }
         catch(const ::Ice::Exception& ex)
         {
@@ -345,7 +358,7 @@ public:
         }
         if(_response)
         {
-            (::IceInternal::Callback<T, CT>::_callback.get()->*_response)(__ret, CT::dynamicCast(__result->getCookie()));
+            (::IceInternal::Callback<T, CT>::_callback.get()->*_response)(__ret, s, CT::dynamicCast(__result->getCookie()));
         }
     }
 
@@ -355,13 +368,13 @@ public:
 };
 
 template<class T, typename CT> Callback_Printer_pStrPtr
-newCallback_Printer_pStr(const IceUtil::Handle<T>& instance, void (T::*cb)(const ::std::string&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_Printer_pStr(const IceUtil::Handle<T>& instance, void (T::*cb)(const ::std::string&, const ::std::string&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_Printer_pStr<T, CT>(instance, cb, excb, sentcb);
 }
 
 template<class T, typename CT> Callback_Printer_pStrPtr
-newCallback_Printer_pStr(T* instance, void (T::*cb)(const ::std::string&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_Printer_pStr(T* instance, void (T::*cb)(const ::std::string&, const ::std::string&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_Printer_pStr<T, CT>(instance, cb, excb, sentcb);
 }

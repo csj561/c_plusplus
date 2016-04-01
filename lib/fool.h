@@ -5,9 +5,42 @@
 */
 #ifndef FOOL_H
 #define FOOL_H
-#define QRCODE_MAX_LEN 1024
+#define K 1024
+#define QRCODE_MAX_LEN K
 #define MACRO_COMB(x,y) x#y
-
+char _curtm[K/8];
+#include <cstdio>
+#ifdef __linux__
+#include <sys/time.h>
+#endif
+void __gettm()
+{
+	time_t t;
+	int len=0;
+	#ifdef __linux__
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	t=tv.tv_sec;
+	#else
+	t=time(NULL);
+	#endif
+	struct tm*_tm=localtime(&t);
+	len=strftime(_curtm,sizeof(_curtm),"[%Y/%m/%d %H:%M:%S]",_tm);
+	#ifdef __linux__
+	sprintf(_curtm+len-1," %06ld]",tv.tv_usec);
+	#endif
+}
+#define CUTTM (__gettm(),_curtm)
+#define DEG(x,...) {\
+	char buf[K];\
+	snprintf(buf,sizeof(buf),"[%s:%d] %s\n",__FILE__,__LINE__,x);\
+	fprintf(stdout,buf,##__VA_ARGS__);\
+	}
+#define XDEG(x,...) {\
+	char buf[K];\
+	snprintf(buf,sizeof(buf),"%s[%s:%d] %s\n",CUTTM,__FILE__,__LINE__,x);\
+	fprintf(stdout,buf,##__VA_ARGS__);\
+	}
 struct pre_tree;
 /*CºÍC++¼æÈÝ½Ó¿Ú*/
 #define COM_INTERFACES \
@@ -103,6 +136,54 @@ namespace fool
 		}
 		return count;
 	}
+	#if 0
+	template<typename KEY,typename VALUE>
+	class Stree
+	{
+		struct leaf
+		{
+			VALUE val;
+			KEY key;
+			std::set<leaf> leafs;
+			bool is_root;
+			bool is_have_val;
+		}
+		leaf root;
+	public:
+		bool add(std::vector<KEY> const &key,const VALUE &val)
+		{
+			typename std::vector<KEY>::iterator;
+			leaf* cur=&root;
+			for(std::vector<KEY>::iterator iter=key.begin();
+				iter!=key.end();iter++)
+			{
+				std::set<leaf>::iterator liter= find(cur->leafs.begin(),cur->leafs.end(),*iter);
+				if(cur->leafs.end()==liter)
+				{
+					leaf tmp;
+					tmp.key=*iter;
+					if(key.end()==iter)
+					{
+						tmp.val=val;
+						tmp.is_have_val = true;
+					}
+					cur->leafs.insert(tmp);
+				}
+				else
+				{
+					if(key.end()==iter&&liter->is_have_val)
+						return false;
+					cur=&liter->leafs;
+				}
+			}
+			return true;
+		}
+		bool match(const std::vector<KEY> &key,VALUE &val,std::vector<KEY> *ret=NULL)
+		{
+			return true;
+		}
+	};
+	#endif
 
 }
 namespace fool
