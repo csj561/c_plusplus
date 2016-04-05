@@ -41,7 +41,41 @@ int main(int argc,char **argv)
 	i=199;
 	fool::PriM(m);
 #endif
+#if 0
 	XDEG("%d",100);
+#endif
+#if 0
+	string s="123";
+	string s1="1234";
+	vector<char> v1(s.begin(),s.end());
+	vector<char> v2(s1.begin(),s1.end()),r;
+	fool::PreTree<char,int> t;
+	cout<<t.add( v1,1)<<endl;
+	cout<<t.add(v2,2)<<endl;
+	string _key="12378655";
+	vector<char> key(_key.begin(),_key.end());
+	int ret=0;
+	cout<<t.match(key,ret,&r)<<endl;
+	fool::Pri(r);
+#endif
+	string s="123";
+	string s1="1234",r;
+	
+	fool::PreTree<string,int> t;
+	t.add( s,1);
+	t.add(s1,2);
+	string _key="12378655";
+	int ret=0;
+	t.match(_key,ret,&r);
+	cout<<r<<endl;
+	t.match("123456",ret,&r);
+	cout<<r<<endl;
+	t.del("1234");
+	t.match(_key,ret,&r);
+	cout<<r<<endl;
+	t.match("123456",ret,&r);
+	cout<<r<<endl;
+
 return 0;
 
 }

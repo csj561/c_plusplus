@@ -13,6 +13,7 @@ char _curtm[K/8];
 #ifdef __linux__
 #include <sys/time.h>
 #endif
+FILE *flog=stdout;
 void __gettm()
 {
 	time_t t;
@@ -30,7 +31,7 @@ void __gettm()
 	sprintf(_curtm+len-1," %06ld]",tv.tv_usec);
 	#endif
 }
-#define CUTTM (__gettm(),_curtm)
+#define CURTM (__gettm(),_curtm)
 #define DEG(x,...) {\
 	char buf[K];\
 	snprintf(buf,sizeof(buf),"[%s:%d] %s\n",__FILE__,__LINE__,x);\
@@ -38,8 +39,8 @@ void __gettm()
 	}
 #define XDEG(x,...) {\
 	char buf[K];\
-	snprintf(buf,sizeof(buf),"%s[%s:%d] %s\n",CUTTM,__FILE__,__LINE__,x);\
-	fprintf(stdout,buf,##__VA_ARGS__);\
+	snprintf(buf,sizeof(buf),"%s[%s:%d] %s\n",CURTM,__FILE__,__LINE__,x);\
+	fprintf(flog,buf,##__VA_ARGS__);\
 	}
 struct pre_tree;
 /*C和C++兼容接口*/
@@ -90,6 +91,8 @@ enum EN_ENCODE_QR
 #include <string>
 #include <list>
 #include <algorithm>
+#include <vector>
+#include <set>
 
 namespace fool
 {
@@ -136,54 +139,143 @@ namespace fool
 		}
 		return count;
 	}
-	#if 0
-	template<typename KEY,typename VALUE>
-	class Stree
+	template<typename KEY,typename VALUE,typename CONTAINER=std::vector<KEY> >
+	class PreTree
 	{
 		struct leaf
 		{
 			VALUE val;
 			KEY key;
+			leaf *parent;
 			std::set<leaf> leafs;
-			bool is_root;
 			bool is_have_val;
-		}
-		leaf root;
+			leaf():parent(NULL),is_have_val(false){}
+			bool operator==(const KEY& _key) const
+			{
+				return key==_key;
+			}
+			bool operator<(const leaf &lr) const
+			{
+				return key<lr.key;
+			}
+		};
+		leaf root;// root不能有值，只能有叶子结点
 	public:
-		bool add(std::vector<KEY> const &key,const VALUE &val)
+		bool add(CONTAINER const &key,const VALUE &val,bool _force=false)
 		{
-			typename std::vector<KEY>::iterator;
+			typename CONTAINER::const_iterator iter;
 			leaf* cur=&root;
-			for(std::vector<KEY>::iterator iter=key.begin();
+			for(iter=key.begin();
 				iter!=key.end();iter++)
 			{
-				std::set<leaf>::iterator liter= find(cur->leafs.begin(),cur->leafs.end(),*iter);
+				typename std::set<leaf>::iterator liter= find(cur->leafs.begin(),cur->leafs.end(),*iter);
 				if(cur->leafs.end()==liter)
 				{
 					leaf tmp;
 					tmp.key=*iter;
-					if(key.end()==iter)
+					if(key.end()==iter+1)
 					{
 						tmp.val=val;
 						tmp.is_have_val = true;
+						tmp.parent=cur;
 					}
-					cur->leafs.insert(tmp);
+					cur = (leaf*)&(*cur->leafs.insert(tmp).first);
 				}
 				else
 				{
-					if(key.end()==iter&&liter->is_have_val)
+					if(key.end()==iter+1)
+					{
+						if(!liter->is_have_val || (liter->is_have_val&& _force))
+						{
+							leaf *pleaf=(leaf *)&(*liter);// 风险，set的迭代器默认为const类型，怕破坏掉元素内部排序
+							pleaf->val=val;
+							pleaf->is_have_val=true;
+							return true;
+						}
 						return false;
-					cur=&liter->leafs;
+					}
+					cur=(leaf*)&(*liter);
 				}
 			}
 			return true;
 		}
-		bool match(const std::vector<KEY> &key,VALUE &val,std::vector<KEY> *ret=NULL)
+		
+		bool match(const CONTAINER &key,VALUE &val,CONTAINER *pre=NULL) const 
 		{
-			return true;
+			typename CONTAINER::const_iterator iter;
+			const VALUE *ret=NULL;
+			const leaf* cur=&root;
+			iter=key.begin();
+			if(pre)
+				pre->clear();
+			for(;iter!=key.end();iter++)
+			{
+				typename std::set<leaf>::iterator liter= find(cur->leafs.begin(),cur->leafs.end(),*iter);
+				if(cur->leafs.end()==liter)
+					break;
+				else
+				{
+					if(liter->is_have_val)
+						ret=&liter->val;
+					cur=(const leaf*)&(*liter);
+				}
+			}
+			if(ret)
+			{
+				val=*ret;
+				if(pre)
+					pre->assign(key.begin(),iter);
+			}
+			
+			return ret;
+		}
+		bool del(const CONTAINER &key)
+		{
+			typename CONTAINER::const_iterator iter;
+			leaf *ret=NULL;
+			const leaf* cur=&root;
+			iter=key.begin();
+			for(;iter!=key.end();iter++)
+			{
+				typename std::set<leaf>::iterator liter= find(cur->leafs.begin(),cur->leafs.end(),*iter);
+				if(cur->leafs.end()==liter)
+					break;
+				else
+				{
+					if(liter->is_have_val&&key.end()==iter+1)
+						ret=(leaf *)&(*liter);
+					cur=(const leaf*)&(*liter);
+				}
+			}
+			if(ret)
+			{
+				ret->is_have_val=false;
+				while(ret->leafs.empty()&&!ret->is_have_val)
+				{
+					typeof(ret) parent = ret->parent;
+					parent->leafs.erase(*ret);
+					ret=parent;
+				}
+				return true;
+			}
+			return false;
 		}
 	};
-	#endif
+	
+	template<typename VALUE>
+	class PreTree<std::string,VALUE>
+	{
+		typedef std::basic_string<char> CONTAINER;
+		typedef std::string key_type;
+		PreTree< char,VALUE,CONTAINER > data;
+		public:
+		bool add(const key_type &key,const VALUE &val)
+		{return data.add(key,val);}
+		bool match(const CONTAINER &key,VALUE &val,CONTAINER *pre=NULL)
+		{return data.match(key,val,pre);}
+		bool del(const key_type & key)
+		{return data.del(key);}
+	};
 
 }
 namespace fool
