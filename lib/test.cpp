@@ -71,6 +71,7 @@ int main(int argc,char **argv)
 	t.match("123456",ret,&r);
 	cout<<r<<endl;
 	t.del("1234");
+	t.del("123");
 	t.match(_key,ret,&r);
 	cout<<r<<endl;
 	t.match("123456",ret,&r);

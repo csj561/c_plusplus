@@ -159,7 +159,7 @@ namespace fool
 				return key<lr.key;
 			}
 		};
-		leaf root;// root不能有值，只能有叶子结点
+		leaf root;// root不能有其它字段，只能有叶子结点
 	public:
 		bool add(CONTAINER const &key,const VALUE &val,bool _force=false)
 		{
@@ -250,7 +250,9 @@ namespace fool
 			if(ret)
 			{
 				ret->is_have_val=false;
-				while(ret->leafs.empty()&&!ret->is_have_val)
+				while(ret->parent
+					&&ret->leafs.empty()
+					&&!ret->is_have_val)
 				{
 					typeof(ret) parent = ret->parent;
 					parent->leafs.erase(*ret);
