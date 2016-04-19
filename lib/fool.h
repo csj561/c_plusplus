@@ -93,6 +93,8 @@ enum EN_ENCODE_QR
 #include <algorithm>
 #include <vector>
 #include <set>
+#include <climits>
+#include <pthread.h>
 
 namespace fool
 {
@@ -278,7 +280,49 @@ namespace fool
 		bool del(const key_type & key)
 		{return data.del(key);}
 	};
-
+	class thread_guard
+	{
+		pthread_mutex_t &mutex;
+		public:
+			thread_guard(pthread_mutex_t &_m):mutex(_m){pthread_mutex_lock(&mutex);}
+			~thread_guard(){pthread_mutex_unlock(&mutex);}
+	};
+	template<typename T,size_t N=UINT_MAX>
+	class security_list
+	{
+		pthread_mutex_t mutex;
+		std::list<T> data;
+		
+		public:
+			security_list(){pthread_mutex_init(&mutex,NULL);}
+			~security_list(){pthread_mutex_destroy(&mutex);}
+			bool push(const T& e)
+			{
+				try
+				{
+					thread_guard mt_guard(mutex);
+					if(data.size()>=N)
+						throw N;
+					data.push_back(e);
+					return true;
+				}
+				catch(...)
+				{
+					return false;
+				}
+			}
+			bool pop(T&e)
+			{
+				thread_guard mt_guard(mutex);
+				if(data.empty())
+					return false;
+				e=data.front();
+				data.pop_front();
+				return true;
+			}
+			int size() const
+			{return data.size();}
+	};
 }
 namespace fool
 {

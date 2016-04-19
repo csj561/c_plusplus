@@ -3,6 +3,7 @@
 #include <Ice/Ice.h>
 #include <exception>
 #include <printer.h>
+#include <fool.h>
 using namespace std;
 using namespace Pri;
 
@@ -19,10 +20,10 @@ int main(int argc,char **argv)
 			throw "Invalid proxy";
 		string s="haha... ";
 		int i=10000;
-		cout<<"start..."<<endl;
+		XDEG("%s","start");
 		while(i--)
 			printer->pStr(s);
-		cout<<"end..."<<endl;
+		XDEG("%s","end");
 	}
 	catch(exception e)
 	{

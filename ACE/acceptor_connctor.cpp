@@ -8,18 +8,19 @@
 #include <ace/SOCK_Connector.h>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 class MyServiceHandler;
 #define PORT_NO 20001
-#define HOSTNAME "127.0.0.1"
-
+const char * HOSTNAME; 
+using namespace std;
 //Add our own Reactor singleton
 typedef ACE_Singleton < ACE_Reactor, ACE_Null_Mutex > Reactor;
  
 //Create an Acceptor
 typedef ACE_Acceptor < MyServiceHandler, ACE_SOCK_ACCEPTOR > Acceptor;
- 
+ vector<ACE_SOCK_Stream *> vstreams;
 //Create a Connector
 typedef ACE_Connector < MyServiceHandler, ACE_SOCK_CONNECTOR > Connector;
 class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM,
@@ -30,32 +31,39 @@ class MyServiceHandler:public ACE_Svc_Handler < ACE_SOCK_STREAM,
      
 //Thread ID used to identify the threads
         ACE_thread_t t_id;
+		bool thread_creat;
     int open(void *) {
         cout << "Acceptor: received new connection this:: " <<(unsigned long)this<< endl;
          
 //Register with the reactor to remember this handle
             Reactor::instance()->register_handler(this,
                                                   ACE_Event_Handler::READ_MASK);
-         
+         vstreams.push_back(&peer());
 //Determine the peer stream and record it globally
          
 //Spawn new thread to send string every second
-            ACE_Thread::spawn((ACE_THR_FUNC) send_data, &peer(), THR_NEW_LWP,
+			if(!thread_creat)
+			{
+            ACE_Thread::spawn((ACE_THR_FUNC) send_data, NULL, THR_NEW_LWP,
                               &t_id);
+			thread_creat=true;
+			}
          
 //keep the service handler registered by returning 0 to the
 //reactor
             return 0;
     }
     static void *send_data(void *p) {
-		ACE_SOCK_Stream *Peer = (ACE_SOCK_Stream *)p; 
         while (1)
              
         {
-        	ostringstream oss;
-            oss << ">>Hello World pid=" << ACE_OS::getpid();
-			cout<<oss.str()<<endl;
-            Peer->send_n(oss.str().c_str(), oss.str().size());
+        	for(typeof(vstreams.begin()) Peer=vstreams.begin();
+				Peer!=vstreams.end();Peer++)
+				{
+				char buf[20];
+				sprintf(buf,"%d",ACE_OS::getpid());
+            	(*Peer)->send_n(buf, ACE_OS::strlen(buf));
+				}
              
 //Go to sleep for a second before sending again
                 ACE_OS::sleep(1);
@@ -108,7 +116,7 @@ void main_accept()
 // appropriate function for accept or connect.... 
 	//pid_t pid = ACE::fork();
 	cout<<"My pid is "<<ACE_OS::getpid()<<endl;
-
+	HOSTNAME=argv[1];
 	if(argc==1)
 	{
 		main_accept();

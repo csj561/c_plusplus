@@ -1,5 +1,5 @@
 .PHONY: clean #不论依赖是否比目标新，规则都要执行
-CPPFLAGS += -I./ -I/home/xyd/github/ice/cpp/include
+CPPFLAGS += -I./ -I/home/xyd/github/ice/cpp/include -I/home/xyd/include
 LDFLAGS += -L/home/xyd/github/ice/cpp/lib/i386-linux-gnu/ -lIce -lpthread -lIceUtil
 obj =  \
       priSrv.o

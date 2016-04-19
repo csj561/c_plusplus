@@ -8,9 +8,9 @@
 #include <iostream>
 using namespace std;
  
-#define HOSTNAME "127.0.0.1"
+const char * HOSTNAME="127.0.0.1";
     
-#define PORT_NO 10101
+#define PORT_NO 20001
 //Create a Service Handler whose open() method will be called back
 //automatically. This class MUST derive from ACE_Svc_Handler which is an
 //interface and as can be seen is a template container class itself. The
@@ -47,11 +47,12 @@ class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH >
   	}
   int handle_output(ACE_HANDLE)
   	{
-  		ACE_OS::sleep(a);
-  		const char *buf="I got msg!";
-  		cout<<"sent msg :: "<<buf<<endl;
+  		
+  		char buf[20];
+		sprintf(buf,"%d",ACE_OS::getpid());
 		peer().send_n(buf,ACE_OS::strlen(buf));
-		ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::DONT_CALL|ACE_Event_Handler::WRITE_MASK);
+		ACE_OS::sleep(1);
+		//ACE_Reactor::instance()->remove_handler(this, ACE_Event_Handler::DONT_CALL|ACE_Event_Handler::WRITE_MASK);
 		return 0;
   	}
 };
@@ -59,6 +60,7 @@ class My_Svc_Handler:public ACE_Svc_Handler < ACE_SOCK_STREAM, ACE_NULL_SYNCH >
  typedef ACE_Connector < My_Svc_Handler,  ACE_SOCK_CONNECTOR > MyConnector;
 int main(int argc, char *argv[]) 
 {
+	HOSTNAME=argv[1];
     ACE_INET_Addr addr(PORT_NO, HOSTNAME);
     My_Svc_Handler * handler = new My_Svc_Handler;
      
