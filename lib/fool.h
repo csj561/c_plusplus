@@ -8,11 +8,40 @@
 #define K 1024
 #define QRCODE_MAX_LEN K
 #define MACRO_COMB(x,y) x#y
+#if 0
+
+#define DEG_LOG 0
+#if DEG_LOG
+static FILE *flog=stdout;
+#define K 1024
+#define DEG(x,...) {\
+    char buf[K];\
+    snprintf(buf,sizeof(buf),"[%s:%d] %s\n",__FILE__,__LINE__,x);\
+    fprintf(stdout,buf,##__VA_ARGS__);\
+}
+#define XDEG(x,...) {\
+    time_t t;\
+    char _curtm[256];\
+    int len=0; \
+struct timeval tv;\
+    gettimeofday(&tv,NULL);\
+    t=tv.tv_sec;\
+struct tm*_tm=localtime(&t);\
+    len=strftime(_curtm,sizeof(_curtm),"[%Y/%m/%d %H:%M:%S]",_tm);\
+    sprintf(_curtm+len-1," %06ld]",tv.tv_usec);\
+    char buf[K];\
+    snprintf(buf,sizeof(buf),"%s[%s:%d] %s\n",_curtm,__FILE__,__LINE__,x);\
+    fprintf(flog,buf,##__VA_ARGS__);\
+}
+#endif
+
+#endif
 char _curtm[K/8];
 #include <cstdio>
 #ifdef __linux__
 #include <sys/time.h>
 #endif
+#include <time.h>
 FILE *flog=stdout;
 void __gettm()
 {
@@ -64,7 +93,11 @@ struct pre_tree;
 	pre_tree * pre_create_pretree(); /*prefix tree*/ \
 	bool pre_add_item(pre_tree *p_tree,const char *,void *); \
 	void *pre_find(const char *,int ); \
-	void pre_destory_pretree(pre_tree *);
+	void pre_destory_pretree(pre_tree *); \
+	int8_t g711_alaw_encode_sample(int16_t); \
+	int16_t g711_alaw_decode_sample(int8_t); \
+	int g711_alaw_encode(const int16_t *,int,int8_t *,int*); \
+	int g711_alaw_decode(const int8_t *,int,int16_t *,int*);
 
 enum EN_SCAN
 {

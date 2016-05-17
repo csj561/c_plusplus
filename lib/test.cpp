@@ -3,6 +3,7 @@
 #include <map>
 #include <cstring>
 #include <string>
+#include <bitset>
 using namespace std;
 //using namespace fool;
 int main(int argc,char **argv)
@@ -58,6 +59,7 @@ int main(int argc,char **argv)
 	cout<<t.match(key,ret,&r)<<endl;
 	fool::Pri(r);
 #endif
+#if 0
 	string s="123";
 	string s1="1234",r;
 	
@@ -76,7 +78,8 @@ int main(int argc,char **argv)
 	cout<<r<<endl;
 	t.match("123456",ret,&r);
 	cout<<r<<endl;
-
+#endif
+	cout<<bitset<16>(fool::g711_alaw_decode_sample(0b10011100))<<endl;
 return 0;
 
 }

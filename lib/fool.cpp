@@ -481,6 +481,76 @@ namespace fool
 		str=p;
 		free(p);
 	}
+	int8_t g711_alaw_encode_sample(int16_t data)
+	{
+		int outlen=1;
+		int8_t ret=0;
+		g711_alaw_encode(&data,1,&ret,&outlen);
+		return ret;
+	}
+	int16_t g711_alaw_decode_sample(int8_t data)
+	{
+		int outlen=1;
+		int16_t ret=0;
+		g711_alaw_decode(&data,1,&ret,&outlen);
+		return ret;
+	}
+
+	int g711_alaw_encode(const int16_t *indata,int inlen,int8_t *outdata,int *outlen)
+	{
+		if(inlen>*outlen)
+			return -1;
+		for(int i=0;i<inlen;i++)
+		{
+		/*
+		1,先看符号位，如果为正，压缩后的第一位为1
+		2,强度位，第一个1与符号位之间0的个数，不超过7个。结果保留3位，取反，作为结果的符号位的后三位
+		3，高位样品，第一1后面的4位，若强度位为7，则为第二个字节的高4位。作为输出的低4位
+		4，结果偶数位取反
+		*/
+			int16_t data=indata[i];
+			int8_t strong_bit=0;
+			int8_t single_bit=((~data)&(0x1<<15))>>8;
+			int16_t mask_bit = 0x1<<14;
+			int8_t high_bit=0;
+			while(!(data&mask_bit))
+			{
+				strong_bit++;
+				mask_bit>>=1;
+				if(7==strong_bit)
+					break;
+			}
+			if(7==strong_bit)
+				high_bit=(data>>4)&0b1111;
+			else
+				high_bit=(data>>(16-6-strong_bit))&0b1111;
+			strong_bit = ((~strong_bit)&0b0111)<<4;
+			outdata[i] = (single_bit|strong_bit|high_bit)^0b01010101;
+		}
+		*outlen=inlen;
+		return 0;
+	}
+	int g711_alaw_decode(const int8_t *indata,int inlen,int16_t *outdata,int *outlen)
+	{
+		if(inlen>*outlen)
+			return -1;
+		for(int ii=0;ii<inlen;ii++)
+		{
+			int8_t data=indata[ii]^0b01010101;
+			int16_t strong_bit=((~data)&0b01110000)>>4;
+			int16_t single_bit=((~data)&(0x1<<7))>>15;
+			int16_t high_bit = data&0b1111;
+			for(int i=0;i<single_bit;i++)
+				single_bit<<=1;
+			if(7!=strong_bit)
+				single_bit<<=1,(single_bit|=0b1);
+			single_bit<<=4;
+			single_bit|=high_bit;
+			outdata[ii]=single_bit<<(15-(7==strong_bit? 4:5)-strong_bit);
+		}
+		*outlen=inlen;
+		return 0;
+	}
 }
 
 bool check_suffix(const char *fn,const char *suffix)
