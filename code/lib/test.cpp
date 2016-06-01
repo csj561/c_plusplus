@@ -79,7 +79,13 @@ int main(int argc,char **argv)
 	t.match("123456",ret,&r);
 	cout<<r<<endl;
 #endif
+#if 0
 	cout<<bitset<16>(fool::g711_alaw_decode_sample(0b10011100))<<endl;
+#endif
+	string s=fool::time_to_str(time(NULL));
+	XDEG("Now time [%s]",s.c_str());
+	time_t t=fool::str_to_time(s.c_str(),3);
+	XDEG("sys time %d transfer time %d",time(NULL),t);
 return 0;
 
 }

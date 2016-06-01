@@ -2,7 +2,7 @@
 target = libfool.a
 release = libfool.so
 
-obj = fool.o fool_scan.o fool_qrencode.o
+obj = fool.o fool_scan.o fool_qrencode.o fool_time.o
 CC = gcc
 CXX = g++
 INC = fool.h
@@ -15,7 +15,7 @@ $(target) : $(obj)
 
 $(release) : $(obj)
 #$(CC)   -shared -o $@ $^ 
-	$(CC) -fPIC  -shared -o $@ $^ 
+	$(CXX) -fPIC  -shared -o $@ $^ 
 
 %.o:%.c
 #$(CC) -g -I./  $^ -c -o $@

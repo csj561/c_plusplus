@@ -34,6 +34,26 @@ extern "C" {
 							sprintf(buf,"[%s:%d]ERROR: %s [%s]",__FILE__,__LINE__,x,errbuf); \
 							fprintf(stderr,buf,##__VA_ARGS__); \
 						   }while(0)
+FILE *__fool_flog=stdout;
+
+char * __gettm(char *_curtm)
+{
+	time_t t;
+	int len=0;
+	#ifdef __linux__
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	t=tv.tv_sec;
+	#else
+	t=time(NULL);
+	#endif
+	struct tm*_tm=localtime(&t);
+	len=strftime(_curtm,K/10,"[%Y/%m/%d %H:%M:%S]",_tm);
+	#ifdef __linux__
+	sprintf(_curtm+len-1," %06ld]",tv.tv_usec);
+	#endif
+	return _curtm;
+}
 
 namespace fool
 {
