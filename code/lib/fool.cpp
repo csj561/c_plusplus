@@ -18,6 +18,8 @@
 #include <algorithm>
 #include <sys/types.h>
 #include <utime.h>
+#include <ios>
+#include <iomanip>
 extern "C" {
 #include <png.h>
 
@@ -570,6 +572,17 @@ namespace fool
 		}
 		*outlen=inlen;
 		return 0;
+	}
+	timer::timer():name(""),_start_time(clock()){}
+	timer::timer(const char *nm):name(nm),_start_time(clock()){}
+	timer::~timer()
+	{
+		double cost_time=(double)(clock()-_start_time)/CLOCKS_PER_SEC;
+		std::cout<< std::setiosflags (std::ios::fixed) << std::setprecision(6);
+		if(name.size())
+			std::cout<<"["<<name<<"] process: "<<cost_time<<std::endl;
+		else
+			std::cout<<"process: "<<cost_time<<std::endl;
 	}
 }
 

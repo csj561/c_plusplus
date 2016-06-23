@@ -9,6 +9,7 @@
 #define QRCODE_MAX_LEN K
 #define MACRO_COMB(x,y) x#y
 #include <stdio.h>
+#include <time.h>
 #ifdef __linux__
 #include <sys/time.h>
 #include <unistd.h>

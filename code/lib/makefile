@@ -5,7 +5,7 @@ release = libfool.so
 obj = fool.o fool_scan.o fool_qrencode.o fool_time.o
 CC = gcc
 CXX = g++
-INC = fool.h
+INC = fool.h fool_internal.hpp
 CFLAGS=-Dpng_set_gray_1_2_4_to_8=png_set_expand_gray_1_2_4_to_8
 .PHONY : all clean
 all : $(target) $(release) test 

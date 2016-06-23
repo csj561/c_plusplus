@@ -160,7 +160,7 @@ namespace fool
 					&&ret->leafs.empty()
 					&&!ret->is_have_val)
 				{
-					typeof(ret) parent = ret->parent;
+					leaf* parent = ret->parent;
 					parent->leafs.erase(*ret);
 					ret=parent;
 				}
@@ -226,6 +226,15 @@ namespace fool
 			}
 			int size() const
 			{return data.size();}
+	};
+	class timer
+	{
+		std::string name;
+		clock_t _start_time;
+		public:
+			timer();
+			timer(const char *);
+			virtual ~timer();
 	};
 }
 #endif

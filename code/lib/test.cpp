@@ -4,6 +4,8 @@
 #include <cstring>
 #include <string>
 #include <bitset>
+#include <vector>
+#include <algorithm>
 using namespace std;
 //using namespace fool;
 int main(int argc,char **argv)
@@ -82,10 +84,38 @@ int main(int argc,char **argv)
 #if 0
 	cout<<bitset<16>(fool::g711_alaw_decode_sample(0b10011100))<<endl;
 #endif
-	string s=fool::time_to_str(time(NULL));
+#if 0
+	fool::timer tmm("Test timer");
+	std::cout<<"fadfafafa"<<std::endl;
+	string s=fool::time_to_str((int)time(NULL));
 	XDEG("Now time [%s]",s.c_str());
 	time_t t=fool::str_to_time(s.c_str(),3);
-	XDEG("sys time %d transfer time %d",time(NULL),t);
+	XDEG("sys time %d transfer time %d",(int)time(NULL),(int)t);
+	{
+		fool::timer();
+	}
+#endif
+	int sz=1000*10000;
+	vector<int> v(sz);
+	{
+		fool::timer t("Push to vector");
+		for(int i=0;i<sz;i++)
+			v[i]=i;
+	}
+	
+	{
+			fool::timer t("random_shuffle");
+			random_shuffle(v.begin(),v.end());
+		}
+
+	
+	
+	{
+		fool::timer t("sort std");
+		sort(v.begin(),v.end());
+	}
+	cout<<"v size "<< v.size()<<endl;
+	cin>>sz;
 return 0;
 
 }
