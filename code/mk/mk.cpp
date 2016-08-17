@@ -43,7 +43,11 @@ void init()
 	ifstream ifs(fn.c_str());
 	if(ifs)
 	{
-		getline(ifs,cflg);
+		while(getline(ifs,cflg))
+		{
+			if(cflg.size()&&'#'!=cflg[0])
+				break;
+		}
 		ifs.close();
 	}
 }
