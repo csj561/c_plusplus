@@ -104,14 +104,14 @@ int main(int argc,char **argv)
 	}
 	
 	{
-			fool::timer t("random_shuffle");
+			fool::timer t("random_shuffle");
 			random_shuffle(v.begin(),v.end());
 		}
 
 	
 	
 	{
-		fool::timer t("sort std");
+		fool::timer t("sort std");
 		sort(v.begin(),v.end());
 	}
 	cout<<"v size "<< v.size()<<endl;

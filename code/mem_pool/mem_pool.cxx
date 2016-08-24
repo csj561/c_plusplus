@@ -13,7 +13,7 @@ struct C
 
 int main()
 {
-	const int cnt=10;
+	const int cnt=1000000;
 	mem_pool<C> cp;
 	C *cs[cnt];
 	for (int i=0;i<cnt;i++)
