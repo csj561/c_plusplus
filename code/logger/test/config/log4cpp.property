@@ -1,0 +1,80 @@
+#__author_= wangchang
+#__date__= 2016-08
+#*********************************************************************
+#【参数配置说明】
+#	%m 消息内容
+#	%n 回车换行
+#	%c category 名字
+#	%d 时间戳
+#	%p 优先级
+#	%r 距离上一次写 log 的间隔, 单位毫秒
+#	%R 距离上一次写 log 的间隔, 单位秒
+#	%t 线程名
+#	%u 处理器时间
+#*********************************************************************
+
+#定义 root category 的属性
+#*********************************************************************
+#【参数配置说明】
+#*********************************************************************
+log4cpp.rootCategory=DEBUG,console,sample2
+
+#定义 rootAppender 属性
+#*********************************************************************
+#【参数配置说明】
+#maxFileSize指出了回滚文件的最大值,单位:字节;
+#maxBackupIndex指出了回滚文件所用的备份文件的最大个数。
+#所谓备份文件，是用来保存回滚文件中因为空间不足未能记录的日志，
+#备份文件的大小仅比回滚文件的最大值大1kb。所以如果maxBackupIndex取值为3，
+#则回滚文件(假设其名称是sample.log，大小为100kb)会有三个备份文件，
+#其名称分别是sample.log.1，sample.log.2和sample.log.3，大小为101kb。
+#另外要注意：如果maxBackupIndex取值为0或者小于0，则回滚文件功能会失效，
+#其表现如同FileAppender一样，不会有大小的限制。这也许是一个bug。
+#如果不想日志文件被覆盖写，可以将maxBackupIndex配置为较大值
+#fileName，日志输出的文件名，可以指定路径
+#*********************************************************************
+#
+#log4cpp.appender.rootAppender=RollingFileAppender
+#log4cpp.appender.rootAppender.fileName=sample.log
+#log4cpp.appender.rootAppender.maxFileSize=10240
+#log4cpp.appender.rootAppender.maxBackupIndex=3
+#log4cpp.appender.rootAppender.backupPattern=%Y-%m-%d
+#log4cpp.appender.rootAppender.layout=PatternLayout
+#log4cpp.appender.rootAppender.layout.ConversionPattern=%d{%Y-%m-%d %H:%M:%S} [%p]: [%c] %m%n
+
+#定义 sample category 的属性
+#*********************************************************************
+#【参数配置说明】
+# 注意：sample为category类型，其命名不能更改
+# sample1,sample2,sample3 更加实际需要进行增删配置
+#*********************************************************************
+
+#定义 sample appender 的属性
+#*********************************************************************
+#【参数配置说明】
+#*********************************************************************
+log4cpp.appender.console=ConsoleAppender
+log4cpp.appender.console.layout=PatternLayout
+log4cpp.appender.console.layout.ConversionPattern=%d{%Y-%m-%d %H:%M:%S} [%p] - %m%n
+
+#定义 sample2 appender 的属性
+#*********************************************************************
+#【参数配置说明】
+#*********************************************************************
+log4cpp.appender.sample2=FileAppender
+log4cpp.appender.sample2.fileName=sample2.log
+log4cpp.appender.sample2.layout=PatternLayout
+log4cpp.appender.sample2.layout.ConversionPattern=%d{%Y-%m-%d %H:%M:%S} [%p] - %m%n
+
+#定义 sample3 appender 的属性
+#*********************************************************************
+#【参数配置说明】
+#*********************************************************************
+#
+#log4cpp.appender.sample3=RollingFileAppender
+#log4cpp.appender.sample3.fileName=sample3.log
+#log4cpp.appender.sample3.maxFileSize=1048576
+#log4cpp.appender.sample3.maxBackupIndex=0
+#log4cpp.appender.sample3.backupPattern=%Y-%m-%d
+#log4cpp.appender.sample3.layout=PatternLayout
+#log4cpp.appender.sample3.layout.ConversionPattern=%d{%Y-%m-%d %H:%M:%S} [%p]: [%c] %m%n

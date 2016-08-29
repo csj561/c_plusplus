@@ -1,0 +1,6 @@
+2016-08-29 17:57:16 [ERROR] - [test.cpp] [5] this is error logger
+2016-08-29 17:57:16 [DEBUG] - [test.cpp] [6] this is DEBUG logger
+2016-08-29 18:03:33 [ERROR] - [test.cpp] [5] this is error logger
+2016-08-29 18:03:33 [DEBUG] - [test.cpp] [6] this is DEBUG logger
+2016-08-29 18:03:34 [ERROR] - [test.cpp] [5] this is error logger
+2016-08-29 18:03:34 [DEBUG] - [test.cpp] [6] this is DEBUG logger
