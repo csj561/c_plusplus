@@ -100,7 +100,7 @@ extern void (*p_logger)(int level,const char *fmt,...);
 #define LOGGER(l,f,...) do {\
     if(p_logger){\
     char buf[MAX_LOG_BUF];\
-    snprintf(buf,MAX_LOG_BUF-1,"[%s] [%d] %s",__FILE__,__LINE__,(f));\
+    snprintf(buf,MAX_LOG_BUF-1,"[%s:%d] %s",__FILE__,__LINE__,(f));\
     (*p_logger)((l),buf,##__VA_ARGS__);\
     }\
 }\
