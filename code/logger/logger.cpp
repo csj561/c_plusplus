@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <cstdlib>
 #include "log4cpp/Portability.hh"
 #ifdef LOG4CPP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -61,8 +62,14 @@ namespace logger {
     {
         try
         {
+		using std::string;
+		string local_config="config/log4cpp.property";
+		string home_config=string(getenv("HOME"))+"/."+local_config;
+		string config(local_config);
+		if(::access(local_config.c_str(),F_OK))
+			config=home_config;
 			// 注意配置文件的路径
-            log4cpp::PropertyConfigurator::configure("./config/log4cpp.property");
+            log4cpp::PropertyConfigurator::configure(config.c_str());
         }
 		catch (log4cpp::ConfigureFailure & e)
 		{
