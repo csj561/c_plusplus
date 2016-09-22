@@ -1,9 +1,11 @@
 #ifndef _MES_QUEUE_H_
 #define _MES_QUEUE_H_
 #include <list>
+#include <sys/time.h>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace msg
 {
@@ -35,7 +37,7 @@ namespace msg
 			boost::lock_guard<boost::mutex> guard(mt);
 			do
 			{
-				if(!sz)
+				if(!sz)// 防止刚刚有数据就被别的线程取走的情况
 				{
 					wait_num++;
 					cond.wait(mt);
@@ -50,6 +52,39 @@ namespace msg
 			dat.pop_front();
 			sz--;
 			return t;
+		}
+		bool pop(T &ret,int64_t micro_sec)
+		{
+			struct timeval _start_time;
+			gettimeofday(&_start_time,NULL);
+			int64_t start_time=_start_time.tv_sec*1000000+_start_time.tv_usec;
+			boost::lock_guard<boost::mutex> guard(mt);
+			do
+			{
+				struct timeval _now_time;
+				gettimeofday(&_now_time,NULL);
+				int64_t now_time=_now_time.tv_sec*1000000+_now_time.tv_usec;
+				if(now_time-start_time>=micro_sec)
+					return false;
+				
+				if(!sz)// 防止刚刚有数据就被别的线程取走的情况
+				{
+					wait_num++;
+					int64_t wait_time=micro_sec-(now_time-start_time);
+					boost::posix_time::time_duration  td=
+						boost::posix_time::seconds(wait_time/1000000)+boost::posix_time::microseconds(wait_time%1000000);
+					cond.timed_wait(mt,td);
+				}
+				else
+				{
+					break;
+				}
+			}while(1);
+			
+			ret=dat.front();
+			dat.pop_front();
+			sz--;
+			return true;
 		}
 		unsigned int size() 
 		{

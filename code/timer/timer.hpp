@@ -6,21 +6,20 @@
 #include <time.h>
 namespace fool
 {
+    using std::string;
     class timer
     {
-    using std::string;
     public:
         timer(string const & _fn="Anonymity"):fn(_fn),cpu_time(clock())
-        {gettimeoffday(&natual_time,NULL);}
+        {gettimeofday(&natual_time,NULL);}
         virtual ~timer()
         {
-            clock_t cpu_end_time = time();
             struct timeval natual_end_time;
             gettimeofday(&natual_end_time,NULL);
-            double cpu_cost_time=(double)(clock()-_start_time)/CLOCKS_PER_SEC;
+            double cpu_cost_time=(double)(clock()-cpu_time)/CLOCKS_PER_SEC;
             double natual_cost_time=(natual_end_time.tv_sec-natual_time.tv_sec) * 1000
                 +(double)(natual_end_time.tv_usec-natual_time.tv_usec)/1000;
-            printf("timer[%s] cpu time [%.3lf] natual time [%.3lf]\n",fn.c_str(),cpu_cost_time,natual_cost_time);
+            printf("Timer[%s] Cpu time [%.3lfms] natual time [%.3lfms]\n",fn.c_str(),cpu_cost_time,natual_cost_time);
         }
     
     private:

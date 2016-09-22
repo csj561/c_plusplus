@@ -17,7 +17,7 @@
 #*********************************************************************
 #【参数配置说明】
 #*********************************************************************
-log4cpp.rootCategory=DEBUG,console,sample2
+log4cpp.rootCategory=DEBUG,console,file_logger
 
 #定义 rootAppender 属性
 #*********************************************************************
@@ -55,16 +55,16 @@ log4cpp.rootCategory=DEBUG,console,sample2
 #*********************************************************************
 log4cpp.appender.console=ConsoleAppender
 log4cpp.appender.console.layout=PatternLayout
-log4cpp.appender.console.layout.ConversionPattern=%d{%Y%m%d %H:%M:%S.%l}:%p %m%n
+log4cpp.appender.console.layout.ConversionPattern=%d{%H:%M:%S.%l}:%p %m%n
 
 #定义 sample2 appender 的属性
 #*********************************************************************
 #【参数配置说明】
 #*********************************************************************
-log4cpp.appender.sample2=FileAppender
-log4cpp.appender.sample2.fileName=logger.log
-log4cpp.appender.sample2.layout=PatternLayout
-log4cpp.appender.sample2.layout.ConversionPattern=%d{%Y-%m-%d %H:%M:%S.%l} [%p] - %m%n
+log4cpp.appender.file_logger=FileAppender
+log4cpp.appender.file_logger.fileName=log/logger.log
+log4cpp.appender.file_logger.layout=PatternLayout
+log4cpp.appender.file_logger.layout.ConversionPattern=%d{%Y-%m-%d %H:%M:%S.%l} [%p] - %m%n
 
 #定义 sample3 appender 的属性
 #*********************************************************************

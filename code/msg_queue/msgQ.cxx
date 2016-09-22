@@ -1,15 +1,23 @@
-#include <msg_queue.hpp>
+#include "msg_queue.hpp"
 #include <cstdio>
 #include <boost/thread/thread.hpp>
 #include <boost/bind/bind.hpp>
+#include <time.h>
 msg::queue<int> q;
 
 void f(int t)
 {
 	while(1)
 	{
-		int i=q.pop();
-		printf("thread [%d] get [%d]\n",t,i);
+		int i;
+		if(q.pop(i,t*1000000))
+		{
+			printf("%d thread [%d] get [%d]\n",time(NULL),t,i);
+		}
+		else
+		{
+			printf("%d thread [%d] get Nothing\n",time(NULL),t);
+		}
 	}
 }
 
@@ -25,6 +33,6 @@ int main()
 	while(i)
 	{
 		q.push(i++);
-		sleep(1);
+		sleep(i);
 	}
 }

@@ -1,1 +1,8 @@
--lACE -g -lpthread  -fvisibility=hidden -fvisibility-inlines-hidden  -I$HOME/include -L$HOME/lib -lfool
+#编译参数
+-g  -fvisibility=hidden -fvisibility-inlines-hidden  -I $HOME/include -L $HOME/lib
+
+#要链接的系统库
+pthread
+
+#要链接的用户库,默认到HOME下的lib中
+logger  log4cpp 
