@@ -58,6 +58,8 @@ namespace msg
 			struct timeval _start_time;
 			gettimeofday(&_start_time,NULL);
 			int64_t start_time=_start_time.tv_sec*1000000+_start_time.tv_usec;
+			if(micro_sec<=0)
+				return false;
 			boost::lock_guard<boost::mutex> guard(mt);
 			do
 			{

@@ -4,3 +4,37 @@
 2016-08-29 18:03:33 [DEBUG] - [test.cpp] [6] this is DEBUG logger
 2016-08-29 18:03:34 [ERROR] - [test.cpp] [5] this is error logger
 2016-08-29 18:03:34 [DEBUG] - [test.cpp] [6] this is DEBUG logger
+2016-08-30 09:59:59 [ERROR] - [test.cpp] [5] this is error logger
+2016-08-30 09:59:59 [DEBUG] - [test.cpp] [6] this is DEBUG logger
+2016-08-30 10:03:02 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:03:02 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:05:21 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:05:21 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:06:00 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:06:00 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:06:01 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:06:01 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:06:01 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:06:01 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:06:02 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:06:02 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:06:02 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:06:02 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:06:03 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:06:03 [DEBUG] - [test.cpp:6] this is DEBUG logger
+20160830 10:09:10.10 [ERROR] - [test.cpp:5] this is error logger
+20160830 10:09:10.10 [DEBUG] - [test.cpp:6] this is DEBUG logger
+20160830 10:09:20.10 [ERROR] - [test.cpp:5] this is error logger
+20160830 10:09:20.10 [DEBUG] - [test.cpp:6] this is DEBUG logger
+20160830 10:09:22.10 [ERROR] - [test.cpp:5] this is error logger
+20160830 10:09:22.10 [DEBUG] - [test.cpp:6] this is DEBUG logger
+20160830 10:09:23.10 [ERROR] - [test.cpp:5] this is error logger
+20160830 10:09:23.10 [DEBUG] - [test.cpp:6] this is DEBUG logger
+20160830 10:09:24.10 [ERROR] - [test.cpp:5] this is error logger
+20160830 10:09:24.10 [DEBUG] - [test.cpp:6] this is DEBUG logger
+20160830 10:10:23.871 [ERROR] - [test.cpp:5] this is error logger
+20160830 10:10:23.871 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:12:17.055 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:12:17.055 [DEBUG] - [test.cpp:6] this is DEBUG logger
+2016-08-30 10:12:49.014 [ERROR] - [test.cpp:5] this is error logger
+2016-08-30 10:12:49.014 [DEBUG] - [test.cpp:6] this is DEBUG logger
