@@ -100,7 +100,10 @@ int main(int argc,char **argv)
 		if(!fn.size())
 			continue;
 		ostringstream ofs;
-		ofs<<"g++ "<<fn[0]<<" -o "<<fn[1]<<" "<<cflg;
+		const char *CC="g++ ";
+		if('c'== argv[i][strlen(argv[i])-1])
+			CC="gcc ";
+		ofs<<CC<<fn[0]<<" -o "<<fn[1]<<" "<<cflg;
 		cout<<ofs.str()<<endl;
 		system(ofs.str().c_str());
 	}
