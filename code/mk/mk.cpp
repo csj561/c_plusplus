@@ -10,7 +10,7 @@
 #include <boost/algorithm/string.hpp>
 using namespace std;
 typedef vector<string> vstr;
-string cflg("");
+string cflg("-D__main__ ");
 vstr fn_split(const string & fn)
 {
 	vstr ret;
@@ -55,7 +55,7 @@ void init()
 		}
 		ifs.close();
 	}
-	cflg=cmp_parm[0];
+	cflg+=cmp_parm[0];
 	string sysLib,usrLib;
 	istringstream iss;
 	string lib;

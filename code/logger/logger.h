@@ -99,9 +99,9 @@ extern void (*p_logger)(int level,const char *fmt,...);
 #ifndef LOGGER
 #define LOGGER(l,f,...) do {\
     if(p_logger){\
-    char buf[MAX_LOG_BUF];\
-    snprintf(buf,MAX_LOG_BUF-1,"[%s:%d] %s",__FILE__,__LINE__,(f));\
-    (*p_logger)((l),buf,##__VA_ARGS__);\
+    char __logger_tmp_buf[MAX_LOG_BUF];\
+    snprintf(__logger_tmp_buf,MAX_LOG_BUF-1,"[%s:%d] %s",__FILE__,__LINE__,(f));\
+    (*p_logger)((l),__logger_tmp_buf,##__VA_ARGS__);\
     }\
 }\
     while(0)

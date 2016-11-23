@@ -55,6 +55,7 @@ namespace logger {
             m_st_log->error("log4cpp callback is error,buffer len is not enough.cur len [%d]",n);
             return;
         }
+	buffer[n]='\0';
         m_this->log4cpp_log((logger::LogLevel)level,buffer);
     }
 
