@@ -83,13 +83,16 @@ enum logger_level{
 		EN_DEBUG  = 700,
 		EN_NOTSET = 800
 };
-
+/*
 #ifdef __main__
 void (*p_logger)(int level,const char *fmt,...) =
         logger::Clog4cppWapper::log4cpp_callback;
 #else
 extern void (*p_logger)(int level,const char *fmt,...);
 #endif
+*/
+static void (*p_logger)(int level,const char *fmt,...) =
+        logger::Clog4cppWapper::log4cpp_callback;
 #ifndef KB
 #define KB 1024
 #endif
@@ -106,5 +109,9 @@ extern void (*p_logger)(int level,const char *fmt,...);
 }\
     while(0)
 #endif // LOGGER
-
+#define LOG_FATAL(x,...) LOGGER(EN_FATAL,x,##__VA_ARGS__)
+#define LOG_ERR(x,...) LOGGER(EN_ERROR,x,##__VA_ARGS__)
+#define LOG_WARN(x,...) LOGGER(EN_WARN,x,##__VA_ARGS__)
+#define LOG_NOT(x,...) LOGGER(EN_NOTICE,x,##__VA_ARGS__)
+#define LOG_INFO(x,...) LOGGER(EN_INFO,x,##__VA_ARGS__)
 #endif // _LOGGER_H_

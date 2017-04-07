@@ -3,4 +3,5 @@
 *.obj
 *.so
 *.a
-
+a.out
+log
